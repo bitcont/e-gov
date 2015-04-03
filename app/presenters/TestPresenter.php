@@ -17,7 +17,8 @@ use Nette\Application\Responses\TextResponse,
 	Masterminds\HTML5,
 	DOMDocument,
 	Nette\Utils\Strings,
-	Bitcont\Google\Drive;
+	Bitcont\Google\Drive,
+	Bitcont\EGov\Bulletin\Scraper\Praha2;
 
 
 class TestPresenter extends BasePresenter
@@ -87,121 +88,10 @@ class TestPresenter extends BasePresenter
 
 	public function renderScrape()
 	{
-		$url = 'http://82.208.47.250:8080/eDeska/';
-		$homepage = $url . 'eDeskaAktualni.jsp';
-		$offset = 0;
-		$step = 50;
-		$results = [];
 
-		do {
-			$postData = [
-				'order' => 'vyveseno',
-				'desc' => TRUE,
-				'first' => $offset,
-				'count' => $step
-			];
-
-
-			$request = new Request($homepage);
-			$response = $request->post(http_build_query($postData))->getResponse();
-
-			$dom = new DOMDocument;
-			$dom->loadHTML($response);
-
-			$table = $dom->getElementsByTagName('table')->item(3);
-
-
-			$resultsPage = [];
-			$i = 0;
-			foreach ($table->getElementsByTagName('tr') as $tr) {
-
-				// skip first two rows
-				if ($i < 2) {
-					$i++;
-					continue;
-				}
-
-				$tds = $tr->getElementsByTagName('td');
-				$itemUrl = $url . static::clearWhitespaces($tds->item(2)->getElementsByTagName('a')->item(0)->getAttribute('href'));
-				$itemHash = sha1($itemUrl);
-
-				$result = [
-					'hash' => $itemHash,
-					'url' => $itemUrl,
-					'title' => trim($tds->item(2)->nodeValue),
-					'department' => trim($tds->item(0)->nodeValue),
-					'category' => trim($tds->item(1)->nodeValue),
-					'issueIdentifier' => trim($tds->item(3)->nodeValue),
-					'originator' => static::clearWhitespaces($tds->item(4)->nodeValue),
-					'addressee' => static::clearWhitespaces($tds->item(5)->nodeValue),
-					'showFrom' => trim($tds->item(6)->nodeValue),
-					'showTo' => trim($tds->item(7)->nodeValue),
-					'docs' => []
-				];
-
-				// files
-				foreach ($tds->item(8)->getElementsByTagName('a') as $a) {
-					$result['docs'][] = [
-						'title' => static::clearWhitespaces($a->nodeValue),
-						'url' => $url . $a->getAttribute('href')
-					];
-				}
-
-				$resultsPage[$itemHash] = $result;
-
-			}
-
-			$results = array_merge($results, $resultsPage);
-			$offset += $step;
-
-		} while (count($resultsPage) === $step);
-
-		// remove hash keys
-		$results = array_values($results);
-
-
-//		\Tracy\Debugger::dump($results);
-		\Tracy\Debugger::dump(count($results));
-
-
-
-
-		$em = $this->entityManager;
-
-		foreach ($results as $result) {
-			$record = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findBy(['hash' => $result['hash']]);
-			if ($record) {
-				continue;
-			}
-
-
-			$record = new Record;
-			$record->hash = $result['hash'];
-			$record->title = $result['title'];
-
-			$em->persist($record);
-
-			foreach ($result['docs'] as $doc) {
-				$document = new Document($record);
-				$document->title = $doc['title'];
-				$document->url = $doc['url'];
-
-				$em->persist($document);
-			}
-
-
-			break; // debug
-		}
-
-		$em->flush();
-
-
-
-		\Tracy\Debugger::dump($record->title);
-
-
-
-
+		$scraper = new Praha2;
+		$records = $scraper->scrape();
+		\Tracy\Debugger::dump($records);
 
 
 		$this->sendResponse(new TextResponse(' scrape '));
