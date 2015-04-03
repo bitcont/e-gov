@@ -16,7 +16,8 @@ use Nette\Application\Responses\TextResponse,
 	Bitcont\EGov\Bulletin\Document,
 	Masterminds\HTML5,
 	DOMDocument,
-	Nette\Utils\Strings;
+	Nette\Utils\Strings,
+	Bitcont\Google\Drive;
 
 
 class TestPresenter extends BasePresenter
@@ -40,124 +41,16 @@ class TestPresenter extends BasePresenter
 
 	public function renderDefault()
 	{
-
-		\Tracy\Debugger::$maxLen = NULL;
-
-
 		$params = $this->container->getParameters();
-
-
-		$client = new Google_Client;
-		$credentials = $client->loadServiceAccountJson($params['google']['accountFile'], [Google_Service_Drive::DRIVE]);
-
-		// master workaround
-		$credentials->privateKeyPassword = NULL;
-
-		$client->setAssertionCredentials($credentials);
-
-
-
-//		$json = file_get_contents($params['google']['accountFile']);
-//		$creds = json_decode($json);
-//
-//		echo $creds->private_key;
-//
-//		$certs = [];
-//		$result = openssl_pkcs12_read($creds->private_key, $certs, '');
-//
-//		var_dump($result);
-//		$err = openssl_error_string();
-//		echo $err;
-
-
-
-
-		if ($client->getAuth()->isAccessTokenExpired()) {
-			$client->getAuth()->refreshTokenWithAssertion($credentials);
-		}
-
-		$client->getAccessToken();
-		$drive = new Google_Service_Drive($client);
-
-
-
-
-//		$result = $drive->files->listFiles();
-//		print_r($result);
-
-
-
-
-
-//		$fileName = 'testfile.doc';
 		$fileName = 'drazebni_vyhlaska_c.j._39636-2015.pdf';
-
-
-
-
 		$filePath = __DIR__ . "/../../resources/google/$fileName";
-		$fileData = file_get_contents($filePath);
 
+		$drive = new Drive($params['google']['accountFile']);
+		$uploadedFile = $drive->upload($filePath, $params['google']['folderId']);
+		$plainText = $drive->getPlainText($uploadedFile);
 
-
-		$parent = new Google_Service_Drive_ParentReference;
-		$parent->setId($params['google']['folderId']);
-
-
-
-
-		$file = new Google_Service_Drive_DriveFile;
-		$file->setTitle($fileName);
-		$file->setParents([$parent]);
-
-
-		$uploadedFile = $drive->files->insert(
-			$file,
-			[
-				'data' => $fileData,
-				'mimeType' => 'application/octet-stream',
-				'uploadType' => 'multipart'
-			]
-		);
-
-
-		\Tracy\Debugger::dump($uploadedFile);
-
-
-
-
-		$fileId = $uploadedFile->getId();
-
-		$file = new Google_Service_Drive_DriveFile;
-		$file->setTitle($fileName);
-		$file->setParents([$parent]);
-
-		$convertedFile = $drive->files->copy($fileId, $file, ['convert' => TRUE]);
-
-
-		\Tracy\Debugger::dump($convertedFile);
-
-
-		$exportLinks = $convertedFile->getExportLinks();
-		$plainTextLink = $exportLinks['text/plain'];
-//		echo " PLAIN TEXT: $plainTextLink";
-
-
-//		$curl = new CurlSender;
-//		CertificateHelper::setCurlCaInfo($curl);
-
-
-
-		$request = new Request($plainTextLink);
-		$request->setTrustedCertificate(CertificateHelper::getCaInfoFile());
-		$plainText = $request->get()->getResponse();
-//		$plainText = $curl->send($request)->getResponse();
 
 		\Tracy\Debugger::dump($plainText);
-
-
-		// remove temp google doc file
-		$drive->files->delete($convertedFile->getId());
 
 
 
@@ -267,7 +160,8 @@ class TestPresenter extends BasePresenter
 		$results = array_values($results);
 
 
-		\Tracy\Debugger::dump($results);
+//		\Tracy\Debugger::dump($results);
+		\Tracy\Debugger::dump(count($results));
 
 
 
@@ -275,6 +169,12 @@ class TestPresenter extends BasePresenter
 		$em = $this->entityManager;
 
 		foreach ($results as $result) {
+			$record = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findBy(['hash' => $result['hash']]);
+			if ($record) {
+				continue;
+			}
+
+
 			$record = new Record;
 			$record->hash = $result['hash'];
 			$record->title = $result['title'];
@@ -288,9 +188,16 @@ class TestPresenter extends BasePresenter
 
 				$em->persist($document);
 			}
+
+
+			break; // debug
 		}
 
 		$em->flush();
+
+
+
+		\Tracy\Debugger::dump($record->title);
 
 
 
@@ -298,6 +205,26 @@ class TestPresenter extends BasePresenter
 
 
 		$this->sendResponse(new TextResponse(' scrape '));
+	}
+
+
+	public function renderDoc()
+	{
+		$em = $this->entityManager;
+
+
+		$record = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findOneBy(['hash' => '8d54858f208e9cd0324b112ebaefa83c94d52c88']);
+
+
+
+		\Tracy\Debugger::dump($record->title);
+
+
+
+
+
+
+		$this->sendResponse(new TextResponse(' doc '));
 	}
 
 
