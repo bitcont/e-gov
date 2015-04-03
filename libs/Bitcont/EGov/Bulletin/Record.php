@@ -22,7 +22,6 @@ class Record
 	 */
 	protected $id;
 
-
 	/**
 	 * Control hash.
 	 *
@@ -30,7 +29,14 @@ class Record
 	 * @var string
 	 */
 	public $hash;
-	
+
+	/**
+	 * Source url.
+	 *
+	 * @ORM\Column(type = "string")
+	 * @var string
+	 */
+	public $url;
 
 	/**
 	 * Title.
@@ -39,6 +45,62 @@ class Record
 	 * @var string
 	 */
 	public $title;
+
+	/**
+	 * Department.
+	 *
+	 * @ORM\Column(type = "string")
+	 * @var string
+	 */
+	public $department;
+
+	/**
+	 * Category.
+	 *
+	 * @ORM\Column(type = "string")
+	 * @var string
+	 */
+	public $category;
+
+	/**
+	 * Issue identifier.
+	 *
+	 * @ORM\Column(type = "string")
+	 * @var string
+	 */
+	public $issueIdentifier;
+
+	/**
+	 * Originating subject.
+	 *
+	 * @ORM\Column(type = "string")
+	 * @var string
+	 */
+	public $originator;
+
+	/**
+	 * Target subject.
+	 *
+	 * @ORM\Column(type = "string")
+	 * @var string
+	 */
+	public $addressee;
+
+	/**
+	 * Beginning of display.
+	 *
+	 * @ORM\Column(type = "date")
+	 * @var DateTime
+	 */
+	public $showFrom;
+
+	/**
+	 * End of display.
+	 *
+	 * @ORM\Column(type = "date")
+	 * @var DateTime
+	 */
+	public $showTo;
 
 
 	/**
@@ -56,6 +118,17 @@ class Record
 	public function __construct()
 	{
 		$this->documents = new ArrayCollection;
+	}
+
+
+	/**
+	 * Returns id.
+	 *
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
 	}
 
 

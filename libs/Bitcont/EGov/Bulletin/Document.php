@@ -30,12 +30,12 @@ class Document
 	protected $record;
 
 	/**
-	 * Title.
+	 * File name.
 	 * 
 	 * @ORM\Column(type = "string")
 	 * @var string
 	 */
-	public $title;
+	public $fileName;
 
 	/**
 	 * Url.
@@ -45,6 +45,30 @@ class Document
 	 */
 	public $url;
 
+	/**
+	 * Plaintext representation if available.
+	 *
+	 * @ORM\Column(type = "text", nullable = true)
+	 * @var string|NULL
+	 */
+	public $plainText;
+
+	/**
+	 * File id in google drive.
+	 *
+	 * @ORM\Column(type = "string", nullable = true)
+	 * @var string
+	 */
+	public $googleDriveId;
+
+	/**
+	 * File name in google drive.
+	 *
+	 * @ORM\Column(type = "string", nullable = true)
+	 * @var string
+	 */
+	public $googleDriveFileName;
+
 
 	/**
 	 * @param Record $record
@@ -53,6 +77,17 @@ class Document
 	{
 		$this->record = $record;
 		$record->getDocuments()->add($this);
+	}
+
+
+	/**
+	 * Returns id.
+	 *
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
 	}
 }
 

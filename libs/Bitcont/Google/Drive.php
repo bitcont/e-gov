@@ -20,12 +20,23 @@ class Drive
 	 */
 	protected $client;
 
+	/**
+	 * Google drive folder id.
+	 *
+	 * @var string
+	 */
+	protected $folderId;
+
 
 	/**
 	 * @param string $accountJsonFile
+	 * @param string $folderId Google drive folder where to put files
 	 */
-	public function __construct($accountJsonFile)
+	public function __construct($accountJsonFile, $folderId)
 	{
+		$this->folderId = $folderId;
+
+		// prepare client
 		$client = new Google_Client;
 		$credentials = $client->loadServiceAccountJson($accountJsonFile, [Google_Service_Drive::DRIVE]);
 
@@ -46,21 +57,21 @@ class Drive
 	 * Uploads file to drive and returns its instance.
 	 *
 	 * @param string $file
-	 * @param string $folderId
+	 * @param string $uploadFileName File will be uploaded to google drive under this name
 	 * @return DriveFile
 	 */
-	public function upload($file, $folderId = NULL)
+	public function upload($file, $uploadFileName = NULL)
 	{
-		$fileName = basename($file);
+		// if $fileName not provided, use the $file name
+		if (!$uploadFileName) $uploadFileName = basename($file);
+
 		$fileData = file_get_contents($file);
 		$googleFile = new Google_Service_Drive_DriveFile;
-		$googleFile->setTitle($fileName);
+		$googleFile->setTitle($uploadFileName);
 
-		if ($folderId) {
-			$parent = new Google_Service_Drive_ParentReference;
-			$parent->setId($folderId);
-			$googleFile->setParents([$parent]);
-		}
+		$parent = new Google_Service_Drive_ParentReference;
+		$parent->setId($this->folderId);
+		$googleFile->setParents([$parent]);
 
 		$uploadedFile = $this->client->files->insert(
 			$googleFile,
@@ -79,21 +90,18 @@ class Drive
 	 * Returns plaintext or NULL.
 	 *
 	 * @param DriveFile $file
-	 * @param string $tempFolderId Temporary folder to save the converted file.
 	 * @return string
 	 */
-	public function getPlainText(DriveFile $file, $tempFolderId = NULL)
+	public function getPlainText(DriveFile $file)
 	{
 		// copy file into google document
 		$fileId = $file->getId();
 		$googleFile = new Google_Service_Drive_DriveFile;
 		$googleFile->setTitle($file->getOriginalFilename());
 
-		if ($tempFolderId) {
-			$parent = new Google_Service_Drive_ParentReference;
-			$parent->setId($tempFolderId);
-			$googleFile->setParents([$parent]);
-		}
+		$parent = new Google_Service_Drive_ParentReference;
+		$parent->setId($this->folderId);
+		$googleFile->setParents([$parent]);
 
 		$convertedFile = $this->client->files->copy($fileId, $googleFile, ['convert' => TRUE]);
 		$exportLinks = $convertedFile->getExportLinks();

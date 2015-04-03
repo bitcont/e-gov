@@ -84,18 +84,10 @@ class Praha2
 				$record->issueIdentifier = trim($tds->item(3)->nodeValue);
 				$record->originator = static::clearWhitespaces($tds->item(4)->nodeValue);
 				$record->addressee = static::clearWhitespaces($tds->item(5)->nodeValue);
-
-
-				// dates
-
-
-
 				$record->showFrom = new DateTime(trim($tds->item(6)->nodeValue));
 				$record->showTo = new DateTime(trim($tds->item(7)->nodeValue));
 
-
-
-				// files
+				// attachments
 				foreach ($tds->item(8)->getElementsByTagName('a') as $a) {
 					$document = new ScrapedDocument;
 					$document->title = static::clearWhitespaces($a->nodeValue);
