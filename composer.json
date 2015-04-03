@@ -1,0 +1,18 @@
+{
+	"name": "bitcont/e-gov",
+    "require": {
+		"php": ">= 5.4.0",
+		"nette/nette": "~2.3.0",
+		"dg/adminer-custom": "~1.6",
+		"google/apiclient": "1.1.*@dev",
+		"kdyby/curl": "~2.2",
+		"kdyby/curl-ca-bundle": "~1.0",
+        "bazo/nette-document-manager-extension": "dev-master",
+        "doctrine/mongodb-odm": "@dev",
+		"kdyby/doctrine": "~2.3",
+		"masterminds/html5": "~2.1"
+	},
+	"require-dev": {
+		"nette/tester": "~1.3"
+	}
+}
