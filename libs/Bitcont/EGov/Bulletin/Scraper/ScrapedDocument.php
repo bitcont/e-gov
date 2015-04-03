@@ -14,11 +14,11 @@ class ScrapedDocument
 	public $url;
 
 	/**
-	 * Title.
+	 * Filename.
 	 *
 	 * @var string
 	 */
-	public $title;
+	public $fileName;
 }
 
 

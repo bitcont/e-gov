@@ -1,0 +1,38 @@
+{block content}
+
+    <table border="1">
+        <tr>
+            <th>Název</th>
+            <th>Značka</th>
+            <th>Zveřejněno od</th>
+            <th>Zveřejněno do</th>
+            <th>Dokumenty</th>
+        </tr>
+
+        {foreach $records as $record}
+            <tr>
+                <td>{$record['title']}</td>
+                <td>{$record['issueIdentifier']}</td>
+                <td>{$record['showFrom']|date:'%d.%m.%Y'}</td>
+                <td>{$record['showTo']|date:'%d.%m.%Y'}</td>
+                <td>
+                    {foreach $record['docs'] as $doc}
+                        {if $doc['href']}
+                            <a href="{$doc['href']}">{$doc['fileName']}</a>
+
+                        {else}
+                            {$doc['fileName']}
+                        {/if}
+
+                        </ br>
+                    {/foreach}
+                </td>
+            </tr>
+        {/foreach}
+
+
+
+    </table>
+
+
+{/block}

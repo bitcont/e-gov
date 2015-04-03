@@ -4,11 +4,22 @@ namespace Bitcont\EGov\Nette;
 
 use Symfony\Component\Console\Command\Command,
 	Symfony\Component\Console\Input\InputInterface,
-	Symfony\Component\Console\Output\OutputInterface;
+	Symfony\Component\Console\Output\OutputInterface,
+	Bitcont\EGov\Bulletin\Scraper\Praha2,
+	Bitcont\EGov\Bulletin\Harvester,
+	Nette\Utils\Strings,
+	Doctrine\ORM\EntityManager,
+	Bitcont\Google\Drive;
 
 
 class HarvestCommand extends Command
 {
+
+	/**
+	 * @var \Doctrine\ORM\EntityManager @inject
+	 */
+	public $entityManager;
+
 
 	protected function configure()
 	{
@@ -20,31 +31,29 @@ class HarvestCommand extends Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$output->writeLn('Newsletter sended');
-
-
-//		$newsletterSender = $this->getHelper('container')->getByType('Models\NewsletterSender');
-
 		$params = $this->getHelper('container')->getContainer()->getParameters();
 
+		$drive = new Drive($params['google']['accountFile'], $params['google']['folderId']);
+		$harvester = new Harvester($this->entityManager, $drive);
 
-//		$params = $this->getHelper('container');
-//		$p = print_r($params, TRUE);
-//
-//		$output->writeLn('P:' . $p);
+		$output->writeLn('=== Praha2 ===');
+		$scraper = new Praha2;
+		foreach ($scraper->scrape() as $scrapedRecord) {
+			$title = Strings::truncate($scrapedRecord->title, 50);
+			$title = Strings::toAscii($title);
 
-//		$params = $this->container->getParameters();
+			$record = $harvester->harvest($scrapedRecord);
 
+			$i = $j = 0;
+			foreach ($record->getDocuments() as $document) {
+				if ($document->googleDriveId !== NULL) $i++;
+				if ($document->plainText !== NULL) $j++;
+			}
+			$count = count($record->getDocuments());
 
+			$output->writeLn("-> $title [$count docs, $i uploaded, $j parsed]");
+		}
 
-//		try {
-//			$newsletterSender->sendNewsletters();
-//			$output->writeLn('Newsletter sended');
-//			return 0; // zero return code means everything is ok
-//
-//		} catch (\Nette\Mail\SmtpException $e) {
-//			$output->writeLn('<error>' . $e->getMessage() . '</error>');
-//			return 1; // non-zero return code means error
-//		}
+		return 0; // zero return code means everything is ok
 	}
 }

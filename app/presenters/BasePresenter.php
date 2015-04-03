@@ -2,14 +2,31 @@
 
 namespace App\Presenters;
 
-use Nette,
-	App\Model;
+use Nette\Application\UI\Presenter,
+	Doctrine\ORM\EntityManager,
+	Nette\DI\Container;
 
 
-/**
- * Base presenter for all application presenters.
- */
-abstract class BasePresenter extends Nette\Application\UI\Presenter
+abstract class BasePresenter extends Presenter
 {
 
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $entityManager;
+
+	/**
+	 * @var \Nette\DI\Container
+	 */
+	protected $container;
+
+
+	public function injectDoctrine(EntityManager $entityManager) {
+		$this->entityManager = $entityManager;
+	}
+
+
+	public function injectContainer(Container $container) {
+		$this->container = $container;
+	}
 }

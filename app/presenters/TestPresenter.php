@@ -35,11 +35,6 @@ class TestPresenter extends BasePresenter
 	 */
 	protected $documentManager;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $entityManager;
-
 
 	public function renderDefault()
 	{
@@ -195,8 +190,8 @@ class TestPresenter extends BasePresenter
 	}
 
 
-	public function injectDoctrine(EntityManager $entityManager) {
-		$this->entityManager = $entityManager;
-	}
+//	public function injectDoctrine(EntityManager $entityManager) {
+//		$this->entityManager = $entityManager;
+//	}
 
 }

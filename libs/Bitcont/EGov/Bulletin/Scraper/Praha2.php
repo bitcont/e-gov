@@ -90,7 +90,7 @@ class Praha2
 				// attachments
 				foreach ($tds->item(8)->getElementsByTagName('a') as $a) {
 					$document = new ScrapedDocument;
-					$document->title = static::clearWhitespaces($a->nodeValue);
+					$document->fileName = static::clearWhitespaces($a->nodeValue);
 					$document->url = static::BASE_URL . $a->getAttribute('href');
 					$record->documents[] = $document;
 				}
