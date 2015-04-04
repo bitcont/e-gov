@@ -89,6 +89,17 @@ class Document
 	{
 		return $this->id;
 	}
+
+
+	/**
+	 * Returns record.
+	 *
+	 * @return Record
+	 */
+	public function getRecord()
+	{
+		return $this->record;
+	}
 }
 
 

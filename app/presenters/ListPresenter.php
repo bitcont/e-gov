@@ -23,6 +23,7 @@ class ListPresenter extends BasePresenter
 
 			foreach ($record->getDocuments() as $document) {
 				$rec['docs'][] = [
+					'id' => $document->getId(),
 					'fileName' => $document->fileName,
 					'href' => $document->googleDriveFileName ? $params['google']['folderUrl'] . '/' . $document->googleDriveFileName : NULL
 				];

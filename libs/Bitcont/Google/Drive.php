@@ -6,6 +6,7 @@ use Google_Client,
 	Google_Service_Drive,
 	Google_Service_Drive_DriveFile,
 	Google_Service_Drive_ParentReference,
+	Google_Service_Exception,
 	Kdyby\Curl\Request,
 	Kdyby\CurlCaBundle\CertificateHelper;
 
@@ -27,14 +28,23 @@ class Drive
 	 */
 	protected $folderId;
 
+	/**
+	 * Google drive folder where to put temporary converted files.
+	 *
+	 * @var string
+	 */
+	protected $tempFolderId;
+
 
 	/**
 	 * @param string $accountJsonFile
 	 * @param string $folderId Google drive folder where to put files
+	 * @param string $folderId Google drive folder where to put temporary converted files
 	 */
-	public function __construct($accountJsonFile, $folderId)
+	public function __construct($accountJsonFile, $folderId, $tempFolderId)
 	{
 		$this->folderId = $folderId;
+		$this->tempFolderId = $tempFolderId;
 
 		// prepare client
 		$client = new Google_Client;
@@ -100,10 +110,16 @@ class Drive
 		$googleFile->setTitle($file->getOriginalFilename());
 
 		$parent = new Google_Service_Drive_ParentReference;
-		$parent->setId($this->folderId);
+		$parent->setId($this->tempFolderId);
 		$googleFile->setParents([$parent]);
 
-		$convertedFile = $this->client->files->copy($fileId, $googleFile, ['convert' => TRUE]);
+		try {
+			$convertedFile = $this->client->files->copy($fileId, $googleFile, ['convert' => TRUE]);
+
+		} catch (Google_Service_Exception $e) {
+			return NULL;
+		}
+
 		$exportLinks = $convertedFile->getExportLinks();
 		$plainTextLink = $exportLinks['text/plain'];
 
@@ -124,6 +140,18 @@ class Drive
 
 		// return plaintext
 		return $plainText;
+	}
+
+
+	/**
+	 * Returns google drive file for given id.
+	 *
+	 * @param string $fileId
+	 * @return DriveFile
+	 */
+	public function getFile($fileId)
+	{
+		return new DriveFile($this->client->files->get($fileId));
 	}
 }
 

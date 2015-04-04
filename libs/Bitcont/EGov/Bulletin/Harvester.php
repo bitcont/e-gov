@@ -3,6 +3,7 @@
 namespace Bitcont\EGov\Bulletin;
 
 use Doctrine\ORM\EntityManager,
+	Doctrine\Common\Collections\Criteria,
 	Bitcont\EGov\Bulletin\Record,
 	Bitcont\EGov\Bulletin\Scraper\ScrapedRecord,
 	Bitcont\Google\Drive,
@@ -11,6 +12,11 @@ use Doctrine\ORM\EntityManager,
 
 class Harvester
 {
+
+	/**
+	 * Expetion code.
+	 */
+	const EXCEPTION_RECORD_ALREADY_IN_DB = 1;
 
 	/**
 	 * Entity manager.
@@ -44,68 +50,102 @@ class Harvester
 	 * @param ScrapedRecord $scrapedRecord
 	 * @return Record
 	 */
-	public function harvest(ScrapedRecord $scrapedRecord)
+	public function saveRecord(ScrapedRecord $scrapedRecord)
+	{
+		$em = $this->entityManager;
+
+		// record already in db
+		$record = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findOneBy(['hash' => $scrapedRecord->hash]);
+		if ($record) throw new Exception('Record already in database', static::EXCEPTION_RECORD_ALREADY_IN_DB);
+
+		// new record
+		$record = $scrapedRecord->getRecord();
+		$em->persist($record);
+
+		// persist documents
+		foreach ($record->getDocuments() as $document) {
+			$em->persist($document);
+		}
+
+		$em->flush();
+		return $record;
+	}
+
+
+	/**
+	 * Download, re-upload and parse record documents.
+	 *
+	 * @param Record $record
+	 */
+	public function harvestRecord(Record $record)
 	{
 		$em = $this->entityManager;
 		$drive = $this->drive;
 
-		// record already in db
-		$record = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findOneBy(['hash' => $scrapedRecord->hash]);
-		if ($record) return $record;
-
-		// new record
-		$record = new Record;
-		$em->persist($record);
-		$record->hash = $scrapedRecord->hash;
-		$record->url = $scrapedRecord->url;
-		$record->title = $scrapedRecord->title;
-		$record->department = $scrapedRecord->department;
-		$record->category = $scrapedRecord->category;
-		$record->issueIdentifier = $scrapedRecord->issueIdentifier;
-		$record->originator = $scrapedRecord->originator;
-		$record->addressee = $scrapedRecord->addressee;
-		$record->showFrom = $scrapedRecord->showFrom;
-		$record->showTo = $scrapedRecord->showTo;
-
-		// documents
-		foreach ($scrapedRecord->documents as $scrapedDocument) {
-			$document = new Document($record);
-			$em->persist($document);
-			$document->fileName = $scrapedDocument->fileName;
-			$document->url = $scrapedDocument->url;
-		}
-
-		$em->flush();
-
-		// documents now have ids we can use to form filenames on google drive
 		try {
 			foreach ($record->getDocuments() as $document) {
-				$tmpFile = tmpfile();
-				$filePath = stream_get_meta_data($tmpFile)['uri'];
-				stream_copy_to_stream(fopen($document->url, 'r'), $tmpFile);
 
-				$uploadedFileName = $document->getId() . '_' . $document->fileName;
-				$uploadedFile = $drive->upload($filePath, $uploadedFileName);
-				$plainText = $drive->getPlainText($uploadedFile);
+				// download & re-upload
+				if ($document->googleDriveId === NULL) {
+					$tmpFile = tmpfile();
+					$filePath = stream_get_meta_data($tmpFile)['uri'];
+					stream_copy_to_stream(fopen($document->url, 'r'), $tmpFile);
 
-				$document->googleDriveId = $uploadedFile->getId();
-				$document->googleDriveFileName = $uploadedFileName;
-				$document->plainText = $plainText;
+					$uploadedFileName = $document->getId() . '_' . $document->fileName;
+					$uploadedFile = $drive->upload($filePath, $uploadedFileName);
+					$document->googleDriveId = $uploadedFile->getId();
+					$document->googleDriveFileName = $uploadedFileName;
+
+					$em->flush();
+				}
+
+				// parse
+				if ($document->plainText === NULL) {
+					if (!isset($uploadedFile)) $uploadedFile = $drive->getFile($document->googleDriveId);
+
+					$plainText = $drive->getPlainText($uploadedFile);
+					$document->plainText = $plainText;
+
+					$em->flush();
+				}
 			}
 
-			$em->flush();
 			return $record;
 
 		} catch (Exception $e) {
 
-			// remove all
-			foreach ($record->getDocuments() as $document) {
-				$em->remove($document);
-			}
+			// fail silently
 
-			$em->remove($record);
-			$em->flush();
-			throw $e;
+//			// remove all
+//			foreach ($record->getDocuments() as $document) {
+//				$em->remove($document);
+//			}
+//
+//			$em->remove($record);
+//			$em->flush();
+//			throw $e;
 		}
+	}
+
+
+	/**
+	 * Returns records with failed document upload or parsing.
+	 *
+	 * @return Record[]
+	 */
+	public function getFailedRecords()
+	{
+		$em = $this->entityManager;
+
+		$criteria = Criteria::create()
+			->where(Criteria::expr()->isNull('googleDriveId'))
+			->orWhere(Criteria::expr()->isNull('plainText'));
+
+		$records = [];
+		foreach ($em->getRepository('Bitcont\EGov\Bulletin\Document')->matching($criteria) as $document) {
+			$records[$document->getRecord()->getId()] = $document->getRecord();
+		}
+
+		return $records;
 	}
 }

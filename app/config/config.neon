@@ -4,6 +4,7 @@ parameters:
         accountFile: %wwwDir%/../resources/google/Uredky-9d21df6d6bc7.json
         folderId: 0B3HFawTFS6HFfmdjX2duclprdVRMZmlsVy1HWlByaGx1UzNnYlpxWmJaOEpJcjBrZEh1dm8
         folderUrl: https://googledrive.com/host/0B3HFawTFS6HFfmdjX2duclprdVRMZmlsVy1HWlByaGx1UzNnYlpxWmJaOEpJcjBrZEh1dm8
+        tempFolderId: 0B3HFawTFS6HFfkZFQWw0VG5icXNVZUJKdjBicmdoT0V5V1JfNXpJdlc5SkNtWTh0b3FmTUE
 
 php:
 	date.timezone: Europe/Prague

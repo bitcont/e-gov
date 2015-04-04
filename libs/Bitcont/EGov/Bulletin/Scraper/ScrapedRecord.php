@@ -2,7 +2,9 @@
 
 namespace Bitcont\EGov\Bulletin\Scraper;
 
-use DateTime;
+use DateTime,
+	Bitcont\EGov\Bulletin\Record,
+	Bitcont\EGov\Bulletin\Document;
 
 
 class ScrapedRecord
@@ -84,6 +86,37 @@ class ScrapedRecord
 	 * @var ScrapedDocument[]
 	 */
 	public $documents = [];
+
+
+	/**
+	 * Creates Record instance from itself.
+	 *
+	 * @return Record
+	 */
+	public function getRecord()
+	{
+		$record = new Record;
+
+		$record->hash = $this->hash;
+		$record->url = $this->url;
+		$record->title = $this->title;
+		$record->department = $this->department;
+		$record->category = $this->category;
+		$record->issueIdentifier = $this->issueIdentifier;
+		$record->originator = $this->originator;
+		$record->addressee = $this->addressee;
+		$record->showFrom = $this->showFrom;
+		$record->showTo = $this->showTo;
+
+		// documents
+		foreach ($this->documents as $scrapedDocument) {
+			$document = new Document($record);
+			$document->fileName = $scrapedDocument->fileName;
+			$document->url = $scrapedDocument->url;
+		}
+
+		return $record;
+	}
 }
 
 

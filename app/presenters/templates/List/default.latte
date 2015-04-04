@@ -17,6 +17,8 @@
                 <td>{$record['showTo']|date:'%d.%m.%Y'}</td>
                 <td>
                     {foreach $record['docs'] as $doc}
+                        [{$doc['id']}]
+
                         {if $doc['href']}
                             <a href="{$doc['href']}">{$doc['fileName']}</a>
 
