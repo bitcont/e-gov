@@ -21,12 +21,14 @@ abstract class BasePresenter extends Presenter
 	protected $container;
 
 
-	public function injectDoctrine(EntityManager $entityManager) {
+	public function injectDoctrine(EntityManager $entityManager)
+	{
 		$this->entityManager = $entityManager;
 	}
 
 
-	public function injectContainer(Container $container) {
+	public function injectContainer(Container $container)
+	{
 		$this->container = $container;
 	}
 }

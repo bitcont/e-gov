@@ -1,2 +1,9 @@
 
 parameters:
+	database:
+		driver: pdo_pgsql
+		host: localhost
+		user: postgres
+		password: heslo
+		dbname: uredky
+		charset: UTF8

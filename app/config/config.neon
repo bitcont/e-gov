@@ -26,33 +26,18 @@ nette:
         maxDepth: 4
 
 
-documentManager:
-    uri: mongodb://localhost/uredky
-    defaultDb: uredky
-    documentsDir: %appDir%/../libs/Bitcont/EGov
-    hydrator:
-        autogenerate: true
-        dir: %tempDir%/cache
-        namespace: DoctrineProxies
-    proxy:
-        autogenerate: true
-        dir: %tempDir%/cache
-        namespace: DoctrineProxies
-
-
 doctrine:
-    driver: pdo_pgsql
-    host: localhost
-    user: postgres
-    password: heslo
-    dbname: uredky
-    charset: UTF8
+    driver: %database.driver%
+    host: %database.host%
+    user: %database.user%
+    password: %database.password%
+    dbname: %database.dbname%
+    charset: %database.charset%
     metadata:
         Bitcont: %appDir%/../libs/Bitcont
 
 
 services:
-	- App\Model\UserManager
 	- App\Forms\SignFormFactory
 	router: App\RouterFactory::createRouter
 
@@ -62,7 +47,6 @@ extensions:
     events: Kdyby\Events\DI\EventsExtension
     annotations: Kdyby\Annotations\DI\AnnotationsExtension
     doctrine: Kdyby\Doctrine\DI\OrmExtension
-    documentManager: Bazo\MongoDb\DI\DocumentManagerExtension
 
 
 console:

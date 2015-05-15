@@ -10,7 +10,6 @@ use Nette\Application\Responses\TextResponse,
 	Google_Service_Drive_ParentReference,
 	Kdyby\Curl\Request,
 	Kdyby\CurlCaBundle\CertificateHelper,
-	Doctrine\ODM\MongoDB\DocumentManager,
 	Doctrine\ORM\EntityManager,
 	Bitcont\EGov\Bulletin\Record,
 	Bitcont\EGov\Bulletin\Document,
@@ -29,11 +28,6 @@ class TestPresenter extends BasePresenter
 	 * @var \Nette\DI\Container
 	 */
 	protected $container;
-
-	/**
-	 * @var \Doctrine\ODM\MongoDB\DocumentManager
-	 */
-	protected $documentManager;
 
 
 	public function renderDefault()
@@ -116,17 +110,6 @@ class TestPresenter extends BasePresenter
 	}
 
 
-	public function renderDoctrine()
-	{
-		$dm = $this->documentManager;
-
-
-
-
-		$this->sendResponse(new TextResponse(''));
-	}
-
-
 	public function renderOrm()
 	{
 		$em = $this->entityManager;
@@ -182,11 +165,6 @@ class TestPresenter extends BasePresenter
 
 	public function injectContainer(Container $container) {
 		$this->container = $container;
-	}
-
-
-	public function injectDocumentManager(DocumentManager $documentManager) {
-		$this->documentManager = $documentManager;
 	}
 
 
