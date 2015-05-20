@@ -1,0 +1,23 @@
+charFilter:
+    punctuation:
+        type: pattern_replace
+        pattern: '[\:\.\&\+]'
+        replacement: ' '
+
+filter:
+    cs_CZ:
+        type: hunspell
+        locale: cs_CZ
+
+analyzer:
+    czech:
+        type: custom
+        tokenizer: standard
+        #char_filter: [punctuation, doubled_letters]
+        char_filter: [punctuation]
+        #filter: [standard, lowercase, synonym, czech_stop, cs_CZ, asciifolding]
+        filter: [standard, lowercase, cs_CZ, asciifolding]
+
+    default_index < czech:
+
+    default_search < czech:

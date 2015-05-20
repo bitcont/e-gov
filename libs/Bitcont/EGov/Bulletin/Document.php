@@ -3,10 +3,14 @@
 namespace Bitcont\EGov\Bulletin;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Search\Mapping\Annotations as SEARCH;
+//use Doctrine\Search\Mapping as SEARCH;
+use JMS\Serializer\Annotation as JMS;
 
 
 /**
  * @ORM\Entity
+ * @JMS\ExclusionPolicy("all")
  */
 class Document
 {
@@ -49,6 +53,8 @@ class Document
 	 * Plaintext representation if available.
 	 *
 	 * @ORM\Column(type = "text", nullable = true)
+	 * @JMS\Expose
+	 * @JMS\Groups({"public", "search"})
 	 * @var string|NULL
 	 */
 	public $plainText;

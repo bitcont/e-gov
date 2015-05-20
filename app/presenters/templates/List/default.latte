@@ -1,5 +1,13 @@
 {block content}
 
+	{control searchForm}
+
+	<br />
+	<br />
+	Found {count($records)} records.
+	<br />
+	<br />
+
     <table border="1">
         <tr>
             <th>Název</th>
@@ -9,7 +17,7 @@
             <th>Dokumenty</th>
         </tr>
 
-        {foreach $records as $record}
+		{foreach $records as $record}
             <tr>
                 <td>{$record['title']}</td>
                 <td>{$record['issueIdentifier']}</td>

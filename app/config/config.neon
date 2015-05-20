@@ -26,7 +26,7 @@ nette:
         maxDepth: 4
 
 
-doctrine:
+entityManager:
     driver: %database.driver%
     host: %database.host%
     user: %database.user%
@@ -34,7 +34,13 @@ doctrine:
     dbname: %database.dbname%
     charset: %database.charset%
     metadata:
-        Bitcont: %appDir%/../libs/Bitcont
+        Bitcont: %appDir%/../libs/Bitcont/EGov
+
+
+doctrineSearch:
+    defaultSerializer: jms
+    metadata:
+        Bitcont: %appDir%/../libs/Bitcont/EGov/ElasticSearch
 
 
 services:
@@ -46,7 +52,9 @@ extensions:
     console: Kdyby\Console\DI\ConsoleExtension
     events: Kdyby\Events\DI\EventsExtension
     annotations: Kdyby\Annotations\DI\AnnotationsExtension
-    doctrine: Kdyby\Doctrine\DI\OrmExtension
+    entityManager: Kdyby\Doctrine\DI\OrmExtension
+    search: Kdyby\ElasticSearch\DI\SearchExtension
+    doctrineSearch: Kdyby\DoctrineSearch\DI\DoctrineSearchExtension
 
 
 console:

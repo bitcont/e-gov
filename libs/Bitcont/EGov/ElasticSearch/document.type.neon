@@ -1,0 +1,12 @@
+index: egov
+class: Bitcont\EGov\Bulletin\Document
+source: true
+properties:
+	id:
+		type: integer
+		includeInAll: true
+
+	plainText:
+		type: string
+		includeInAll: true
+		analyzer: standard

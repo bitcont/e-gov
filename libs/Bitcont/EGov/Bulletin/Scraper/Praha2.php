@@ -4,6 +4,7 @@ namespace Bitcont\EGov\Bulletin\Scraper;
 
 use DateTime,
 	Kdyby\Curl\Request,
+	ForceUTF8\Encoding,
 	DOMDocument;
 
 
@@ -72,7 +73,7 @@ class Praha2
 				}
 
 				$tds = $tr->getElementsByTagName('td');
-				$itemUrl = static::BASE_URL . static::clearWhitespaces($tds->item(2)->getElementsByTagName('a')->item(0)->getAttribute('href'));
+				$itemUrl = static::BASE_URL . static::clear($tds->item(2)->getElementsByTagName('a')->item(0)->getAttribute('href'));
 				$itemHash = sha1($itemUrl);
 
 				$record = new ScrapedRecord;
@@ -82,15 +83,15 @@ class Praha2
 				$record->department = trim($tds->item(0)->nodeValue);
 				$record->category = trim($tds->item(1)->nodeValue);
 				$record->issueIdentifier = trim($tds->item(3)->nodeValue);
-				$record->originator = static::clearWhitespaces($tds->item(4)->nodeValue);
-				$record->addressee = static::clearWhitespaces($tds->item(5)->nodeValue);
+				$record->originator = static::clear($tds->item(4)->nodeValue);
+				$record->addressee = static::clear($tds->item(5)->nodeValue);
 				$record->showFrom = new DateTime(trim($tds->item(6)->nodeValue));
 				$record->showTo = new DateTime(trim($tds->item(7)->nodeValue));
 
 				// attachments
 				foreach ($tds->item(8)->getElementsByTagName('a') as $a) {
 					$document = new ScrapedDocument;
-					$document->fileName = static::clearWhitespaces($a->nodeValue);
+					$document->fileName = static::clear($a->nodeValue);
 					$document->url = static::BASE_URL . $a->getAttribute('href');
 					$record->documents[] = $document;
 				}
@@ -115,8 +116,21 @@ class Praha2
 	 * @param string $string
 	 * @return string
 	 */
-	protected static function clearWhitespaces($string) {
+	protected static function clearWhitespaces($string)
+	{
 		return preg_replace('/\s+/', ' ', trim($string));
+	}
+
+
+	/**
+	 * Prepare the string to be saved to DB.
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	protected static function clear($string)
+	{
+		return Encoding::fixUTF8(static::clearWhitespaces($string));
 	}
 }
 
