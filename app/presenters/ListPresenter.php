@@ -55,6 +55,7 @@ class ListPresenter extends BasePresenter
 
 
 
+
 			$records = [];
 			foreach ($documents as $document) {
 				$record = $document->getRecord();
