@@ -2,12 +2,29 @@
 
 namespace App\Presenters;
 
+use Doctrine\ORM\EntityManager;
+use Doctrine\Search\SearchManager;
+use Nette\DI\Container;
 use Nette\Application\UI\Form;
+use Nette\Utils\Paginator;
 use Bitcont\EGov\ElasticSearch\DocumentSearchQuery;
 
 
 class ListPresenter extends BasePresenter
 {
+
+	protected $entityManager;
+	protected $searchManager;
+	protected $container;
+
+
+	public function __construct(EntityManager $entityManager, SearchManager $searchManager, Container $container)
+	{
+		$this->entityManager = $entityManager;
+		$this->searchManager = $searchManager;
+		$this->container = $container;
+	}
+
 
 	public function renderDefault($searchPhrase = NULL)
 	{
@@ -17,21 +34,51 @@ class ListPresenter extends BasePresenter
 
 		if ($searchPhrase) {
 
-//			$document = $em->getRepository('Bitcont\EGov\Bulletin\Document')->findOneBy(['id' => 13]);
-//			$document->plainText = 'necum ' . $document->plainText;
-//
+
+
+
+
+//			$document = $em->getRepository('Bitcont\EGov\Bulletin\Document')->findOneBy(['id' => 7]);
+////			$document->plainText = 'necum ' . $document->plainText;
 //			$this->searchManager->persist($document);
 //			$this->searchManager->flush();
+//			die();
+
+
+
+//			foreach ($em->getRepository('Bitcont\EGov\Bulletin\Document')->findAll() as $document) {
+//				if (!$document->plainText) continue;
+//				$this->searchManager->persist($document);
+//			}
+//			$documents = $em->getRepository('Bitcont\EGov\Bulletin\Document')->findAll();
+//			$this->searchManager->persist($documents);
+//
+//			$this->searchManager->flush();
+//			die();
+
+
+
 //
 ////			print_r($this->searchManager);
 //			echo "x";
 //			die();
 
 
+			$paginator = new Paginator;
+			$paginator->setItemsPerPage(500);
+
+
 			$search = (new DocumentSearchQuery($searchPhrase))
+				->setPaginator($paginator)
 				->createQuery($this->searchManager, $this->entityManager);
 
 			$documents = $search->getResult();
+			$paginator->setItemCount($search->count());
+
+
+//			scanAndScroll()
+
+
 
 
 
@@ -70,6 +117,7 @@ class ListPresenter extends BasePresenter
 
 		foreach ($records as $record) {
 			$recordData = [
+				'id' => $record->getId(),
 				'title' => $record->title,
 				'showFrom' => $record->showFrom,
 				'showTo' => $record->showTo,

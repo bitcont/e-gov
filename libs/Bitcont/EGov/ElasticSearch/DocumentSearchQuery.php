@@ -7,7 +7,7 @@ use Elastica\Query;
 use Elastica\Util;
 use Doctrine\Search\SearchManager;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\Tools\Pagination\Paginator;
+use Nette\Utils\Paginator;
 use Bitcont\EGov\Bulletin\Document;
 
 class DocumentSearchQuery
@@ -61,17 +61,18 @@ class DocumentSearchQuery
 		$name = (new Query\Match())
 			->setFieldQuery('plainText', $this->query)
 			->setFieldOperator('plainText', 'AND')
-			->setFieldBoost('plainText', 10);
+			->setFieldBoost('plainText', 5);
 
 		return (new Query\Bool())
-			->addShould($search)
+//			->addShould($search)
 			->addShould($name);
 	}
 
 	private function createSearchFilter()
 	{
-		$filter = (new Filter\Bool())
-			->addMust(new Filter\Term(['enable' => TRUE]));
+//		$filter = (new Filter\Bool())
+//			->addMust(new Filter\Term(['enable' => TRUE]));
+		$filter = (new Filter\Bool());
 
 		return $filter;
 	}

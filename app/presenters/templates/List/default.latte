@@ -19,7 +19,7 @@
 
 		{foreach $records as $record}
             <tr>
-                <td>{$record['title']}</td>
+                <td>[{$record['id']}] {$record['title']}</td>
                 <td>{$record['issueIdentifier']}</td>
                 <td>{$record['showFrom']|date:'%d.%m.%Y'}</td>
                 <td>{$record['showTo']|date:'%d.%m.%Y'}</td>
