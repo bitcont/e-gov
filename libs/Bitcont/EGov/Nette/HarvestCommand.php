@@ -2,24 +2,23 @@
 
 namespace Bitcont\EGov\Nette;
 
-use Symfony\Component\Console\Command\Command,
-	Symfony\Component\Console\Input\InputInterface,
-	Symfony\Component\Console\Output\OutputInterface,
-	Bitcont\EGov\Bulletin\Scraper\Praha2,
-	Bitcont\EGov\Bulletin\Harvester,
-	Bitcont\EGov\Bulletin\Record,
-	Nette\Utils\Strings,
-	Doctrine\ORM\EntityManager,
-	Bitcont\Google\Drive,
-	Exception,
-	Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Bitcont\EGov\Bulletin\Scraper\Praha2;
+use Bitcont\EGov\Bulletin\Harvester;
+use Bitcont\EGov\Bulletin\Record;
+use Bitcont\Google\Drive;
+use Nette\Utils\Strings;
+use Exception;
 
 
 class HarvestCommand extends Command
 {
 
 	/**
-	 * @var \Doctrine\ORM\EntityManager @inject
+	 * @inject
+	 * @var \Doctrine\ORM\EntityManager
 	 */
 	public $entityManager;
 
@@ -27,7 +26,7 @@ class HarvestCommand extends Command
 	protected function configure()
 	{
 		$this
-			->setName('app:harvest')
+			->setName('egov:harvest')
 			->setDescription('Harvests data from all the bulletin boards')
 			->addOption('redo');
 	}
@@ -50,7 +49,7 @@ class HarvestCommand extends Command
 			}
 
 		} else {
-			$output->writeLn('=== Praha2 ===');
+			$output->writeLn('=== Praha 2 ===');
 
 			$scraper = new Praha2;
 			$i = 0;

@@ -60,4 +60,5 @@ extensions:
 console:
     commands:
         - Bitcont\EGov\Nette\HarvestCommand
+        - Bitcont\EGov\Nette\IndexCommand
 
