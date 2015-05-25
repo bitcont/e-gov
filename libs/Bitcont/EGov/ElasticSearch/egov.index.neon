@@ -1,23 +1,30 @@
 charFilter:
-    punctuation:
-        type: pattern_replace
-        pattern: '[\:\.\&\+]'
-        replacement: ' '
+	punctuation:
+		type: pattern_replace
+		pattern: '[\:\.\&\+]'
+		replacement: ' '
 
 filter:
-    cs_CZ:
-        type: hunspell
-        locale: cs_CZ
+	stopwords_CZ:
+		type: stop
+		stopwords: [právě, že, _czech_]
+		ignore_case: true
+
+	hunspell_CZ:
+		type: hunspell
+		locale: cs_CZ
+		dedup: true
 
 analyzer:
-    czech:
-        type: custom
-        tokenizer: standard
-        #char_filter: [punctuation, doubled_letters]
-        char_filter: [punctuation]
-        #filter: [standard, lowercase, synonym, czech_stop, cs_CZ, asciifolding]
-        filter: [standard, lowercase, cs_CZ, asciifolding]
+	czech:
+		type: custom
+		tokenizer: standard
+		#char_filter: [punctuation, doubled_letters]
+		char_filter: [punctuation]
+		#filter: [standard, lowercase, synonym, czech_stop, cs_CZ, asciifolding]
 
-    default_index < czech:
+		filter: [standard, stopwords_CZ, hunspell_CZ, lowercase, hunspell_CZ, asciifolding]
 
-    default_search < czech:
+	default_index < czech:
+
+	default_search < czech:

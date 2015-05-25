@@ -31,7 +31,8 @@ class DocumentSearchQuery
 
 	public function createQuery(SearchManager $searchManager, EntityManager $entityManager)
 	{
-		$filtered = new Query\Filtered($this->createSearchQuery(), $this->createSearchFilter());
+//		$filtered = new Query\Filtered($this->createSearchQuery(), $this->createSearchFilter());
+		$filtered = new Query\Filtered($this->createSearchQuery());
 
 		$searchWith = (new Query($filtered))
 //			->addSort(['available' => ['order' => 'desc']])

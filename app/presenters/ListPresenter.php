@@ -26,13 +26,13 @@ class ListPresenter extends BasePresenter
 	}
 
 
-	public function renderDefault($searchPhrase = NULL)
+	public function renderDefault($search = NULL)
 	{
 		$settings = $this->container->getParameters();
 		$em = $this->entityManager;
 		$this->template->records = [];
 
-		if ($searchPhrase) {
+		if ($search) {
 
 
 
@@ -68,12 +68,12 @@ class ListPresenter extends BasePresenter
 			$paginator->setItemsPerPage(500);
 
 
-			$search = (new DocumentSearchQuery($searchPhrase))
+			$searchQuery = (new DocumentSearchQuery($search))
 				->setPaginator($paginator)
 				->createQuery($this->searchManager, $this->entityManager);
 
-			$documents = $search->getResult();
-			$paginator->setItemCount($search->count());
+			$documents = $searchQuery->getResult();
+			$paginator->setItemCount($searchQuery->count());
 
 
 //			scanAndScroll()
@@ -115,6 +115,16 @@ class ListPresenter extends BasePresenter
 			$records = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findAll();
 		}
 
+
+
+
+		usort($records, function($a, $b) {
+			return $a->getId() - $b->getId();
+		});
+
+
+
+
 		foreach ($records as $record) {
 			$recordData = [
 				'id' => $record->getId(),
@@ -151,6 +161,8 @@ class ListPresenter extends BasePresenter
 
 	public function searchFormSucceeded(Form $form, $values)
 	{
+
+
 
 //		print_r($values);
 //		die();

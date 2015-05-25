@@ -19,7 +19,7 @@ class IndexCommand extends Command
 
 	/**
 	 * @inject
-	 * @var \Doctrine\ORM\EntityManager
+	 * @var \Doctrine\Search\SearchManager
 	 */
 	public $searchManager;
 
@@ -35,20 +35,28 @@ class IndexCommand extends Command
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$sm = $this->searchManager;
-
 		$documents = $this->entityManager->getRepository('Bitcont\EGov\Bulletin\Document')->findAll();
+		$indexed = $skipped = 0;
+
 
 		foreach ($documents as $document) {
 
-			if (!$document->plainText) continue;
+			if (!$document->plainText) {
+				$output->writeLn(" [{$document->getId()}] skipped");
+				$skipped++;
+				continue;
+			}
+
 			$sm->persist($document);
+//			$sm->flush($document);
 			$sm->flush();
-			$sm->detach($document);
+//			$sm->detach($document);
 
 			$output->writeLn(" [{$document->getId()}] indexed");
+			$indexed++;
 		}
 
-		$output->writeLn("===== total indexed: " . count($documents));
+		$output->writeLn("===== total: " . count($documents) . ", indexed: $indexed, skipped: $skipped");
 
 		return 0; // zero return code means everything is ok
 	}
