@@ -15,6 +15,14 @@ filter:
 		locale: cs_CZ
 		dedup: true
 
+	remove_duplicities:
+		type: unique
+		only_on_same_position: true
+
+	my_ascii_folding:
+		type: asciifolding
+		preserve_original: true
+
 analyzer:
 	czech:
 		type: custom
@@ -23,7 +31,7 @@ analyzer:
 		char_filter: [punctuation]
 		#filter: [standard, lowercase, synonym, czech_stop, cs_CZ, asciifolding]
 
-		filter: [standard, stopwords_CZ, hunspell_CZ, lowercase, hunspell_CZ, asciifolding]
+		filter: [stopwords_CZ, hunspell_CZ, lowercase, stopwords_CZ, remove_duplicities]
 
 	default_index < czech:
 

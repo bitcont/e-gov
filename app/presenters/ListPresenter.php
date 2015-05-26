@@ -8,6 +8,7 @@ use Nette\DI\Container;
 use Nette\Application\UI\Form;
 use Nette\Utils\Paginator;
 use Bitcont\EGov\ElasticSearch\DocumentSearchQuery;
+use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 
 
 class ListPresenter extends BasePresenter
@@ -28,9 +29,14 @@ class ListPresenter extends BasePresenter
 
 	public function renderDefault($search = NULL)
 	{
+
+//		print_r($this->template);
+//		die();
+
+
 		$settings = $this->container->getParameters();
 		$em = $this->entityManager;
-		$this->template->records = [];
+		$template['records'] = [];
 
 		if ($search) {
 
@@ -143,8 +149,11 @@ class ListPresenter extends BasePresenter
 				];
 			}
 
-			$this->template->records[] = $recordData;
+			$template['records'][] = $recordData;
 		}
+
+
+		$this->fillTemplate($this->container, $template);
 	}
 
 
@@ -154,6 +163,7 @@ class ListPresenter extends BasePresenter
 		$form->setMethod('GET');
 		$form->addText('search');
 		$form->addSubmit('submit', 'Search');
+		$form->setRenderer(new BootstrapRenderer);
 		$form->onSuccess[] = [$this, 'searchFormSucceeded'];
 		return $form;
 	}

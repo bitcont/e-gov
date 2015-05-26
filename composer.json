@@ -13,7 +13,8 @@
 		"kdyby/doctrine-search": "dev-master",
 		"kdyby/elastic-search": "dev-master",
 		"doctrine/search": "dev-devel",
-		"jms/serializer": "~0.16"
+		"jms/serializer": "~0.16",
+		"kdyby/bootstrap-form-renderer": "@dev"
 	},
 	"require-dev": {
 		"nette/tester": "~1.3"

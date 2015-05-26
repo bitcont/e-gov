@@ -9,4 +9,4 @@ properties:
 	plainText:
 		type: string
 		includeInAll: true
-		analyzer: standard
+		analyzer: czech

@@ -1,10 +1,15 @@
 
 parameters:
-    google:
-        accountFile: %wwwDir%/../resources/google/Uredky-9d21df6d6bc7.json
-        folderId: 0B3HFawTFS6HFfmdjX2duclprdVRMZmlsVy1HWlByaGx1UzNnYlpxWmJaOEpJcjBrZEh1dm8
-        folderUrl: https://googledrive.com/host/0B3HFawTFS6HFfmdjX2duclprdVRMZmlsVy1HWlByaGx1UzNnYlpxWmJaOEpJcjBrZEh1dm8
-        tempFolderId: 0B3HFawTFS6HFfkZFQWw0VG5icXNVZUJKdjBicmdoT0V5V1JfNXpJdlc5SkNtWTh0b3FmTUE
+	google:
+		accountFile: %wwwDir%/../resources/google/Uredky-9d21df6d6bc7.json
+		folderId: 0B3HFawTFS6HFfmdjX2duclprdVRMZmlsVy1HWlByaGx1UzNnYlpxWmJaOEpJcjBrZEh1dm8
+		folderUrl: https://googledrive.com/host/0B3HFawTFS6HFfmdjX2duclprdVRMZmlsVy1HWlByaGx1UzNnYlpxWmJaOEpJcjBrZEh1dm8
+		tempFolderId: 0B3HFawTFS6HFfkZFQWw0VG5icXNVZUJKdjBicmdoT0V5V1JfNXpJdlc5SkNtWTh0b3FmTUE
+
+	brand:
+		name: Úředky
+		email: mich.spicka+uredky@gmail.com
+		claim: Všechny úřední desky na jednom místě.
 
 php:
 	date.timezone: Europe/Prague
@@ -21,26 +26,26 @@ session:
 
 
 nette:
-    debugger:
-        maxLen: 0
-        maxDepth: 4
+	debugger:
+		maxLen: 0
+		maxDepth: 4
 
 
 entityManager:
-    driver: %database.driver%
-    host: %database.host%
-    user: %database.user%
-    password: %database.password%
-    dbname: %database.dbname%
-    charset: %database.charset%
-    metadata:
-        Bitcont: %appDir%/../libs/Bitcont/EGov
+	driver: %database.driver%
+	host: %database.host%
+	user: %database.user%
+	password: %database.password%
+	dbname: %database.dbname%
+	charset: %database.charset%
+	metadata:
+		Bitcont: %appDir%/../libs/Bitcont/EGov
 
 
 doctrineSearch:
-    defaultSerializer: jms
-    metadata:
-        Bitcont: %appDir%/../libs/Bitcont/EGov/ElasticSearch
+	defaultSerializer: jms
+	metadata:
+		Bitcont: %appDir%/../libs/Bitcont/EGov/ElasticSearch
 
 
 services:
@@ -49,16 +54,16 @@ services:
 
 
 extensions:
-    console: Kdyby\Console\DI\ConsoleExtension
-    events: Kdyby\Events\DI\EventsExtension
-    annotations: Kdyby\Annotations\DI\AnnotationsExtension
-    entityManager: Kdyby\Doctrine\DI\OrmExtension
-    search: Kdyby\ElasticSearch\DI\SearchExtension
-    doctrineSearch: Kdyby\DoctrineSearch\DI\DoctrineSearchExtension
+	console: Kdyby\Console\DI\ConsoleExtension
+	events: Kdyby\Events\DI\EventsExtension
+	annotations: Kdyby\Annotations\DI\AnnotationsExtension
+	entityManager: Kdyby\Doctrine\DI\OrmExtension
+	search: Kdyby\ElasticSearch\DI\SearchExtension
+	doctrineSearch: Kdyby\DoctrineSearch\DI\DoctrineSearchExtension
 
 
 console:
-    commands:
-        - Bitcont\EGov\Nette\HarvestCommand
-        - Bitcont\EGov\Nette\IndexCommand
+	commands:
+		- Bitcont\EGov\Nette\HarvestCommand
+		- Bitcont\EGov\Nette\IndexCommand
 

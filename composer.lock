@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "6791b58a40bb1e2fe9315a8e10f309c6",
+    "hash": "9479fc2e6f783cd8aedf644bbb4acc3b",
     "packages": [
         {
             "name": "dg/adminer-custom",
@@ -631,12 +631,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/fprochazka/doctrine-search.git",
-                "reference": "7b5b376ab7791d9bd51457052af691a140f42298"
+                "reference": "cd29a19ab53bdaa61a87981f01afe4e3b4045d4d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/fprochazka/doctrine-search/zipball/7b5b376ab7791d9bd51457052af691a140f42298",
-                "reference": "7b5b376ab7791d9bd51457052af691a140f42298",
+                "url": "https://api.github.com/repos/fprochazka/doctrine-search/zipball/cd29a19ab53bdaa61a87981f01afe4e3b4045d4d",
+                "reference": "cd29a19ab53bdaa61a87981f01afe4e3b4045d4d",
                 "shasum": ""
             },
             "require": {
@@ -688,7 +688,7 @@
             "support": {
                 "source": "https://github.com/fprochazka/doctrine-search/tree/devel"
             },
-            "time": "2015-05-15 16:37:44"
+            "time": "2015-05-21 13:53:57"
         },
         {
             "name": "google/apiclient",
@@ -696,12 +696,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/google/google-api-php-client.git",
-                "reference": "523430f21a92c54172099d12d0f31d40f3de67e9"
+                "reference": "517fc2bb11d2d3cfd27af3f783fce6f2f61c688c"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/523430f21a92c54172099d12d0f31d40f3de67e9",
-                "reference": "523430f21a92c54172099d12d0f31d40f3de67e9",
+                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/517fc2bb11d2d3cfd27af3f783fce6f2f61c688c",
+                "reference": "517fc2bb11d2d3cfd27af3f783fce6f2f61c688c",
                 "shasum": ""
             },
             "require": {
@@ -730,7 +730,7 @@
             "keywords": [
                 "google"
             ],
-            "time": "2015-05-17 00:43:01"
+            "time": "2015-05-21 19:40:29"
         },
         {
             "name": "jms/metadata",
@@ -976,6 +976,56 @@
             "time": "2015-04-04 16:14:57"
         },
         {
+            "name": "kdyby/bootstrap-form-renderer",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Kdyby/BootstrapFormRenderer.git",
+                "reference": "a1b5dabc2c63354e7a8d4e29dab2d5ea31b54733"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Kdyby/BootstrapFormRenderer/zipball/a1b5dabc2c63354e7a8d4e29dab2d5ea31b54733",
+                "reference": "a1b5dabc2c63354e7a8d4e29dab2d5ea31b54733",
+                "shasum": ""
+            },
+            "require": {
+                "nette/nette": "~2.1@dev"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "~0.6",
+                "nette/tester": "@dev"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Kdyby\\BootstrapFormRenderer\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause",
+                "GPL-2.0",
+                "GPL-3.0"
+            ],
+            "authors": [
+                {
+                    "name": "Filip Procházka",
+                    "email": "filip@prochazka.su",
+                    "homepage": "http://filip-prochazka.com"
+                }
+            ],
+            "description": "Nette forms renderer with bootstrap",
+            "homepage": "http://kdyby.org",
+            "keywords": [
+                "Forms",
+                "bootstrap",
+                "kdyby",
+                "nette"
+            ],
+            "time": "2014-12-05 18:56:07"
+        },
+        {
             "name": "kdyby/console",
             "version": "v2.3.1",
             "source": {
@@ -1193,12 +1243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kdyby/Doctrine.git",
-                "reference": "9d372598305dd99bd33541c3230839174ed86a6e"
+                "reference": "c20a27d7e7c1c225c4ce7b93dfef130da026e654"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kdyby/Doctrine/zipball/9d372598305dd99bd33541c3230839174ed86a6e",
-                "reference": "9d372598305dd99bd33541c3230839174ed86a6e",
+                "url": "https://api.github.com/repos/Kdyby/Doctrine/zipball/c20a27d7e7c1c225c4ce7b93dfef130da026e654",
+                "reference": "c20a27d7e7c1c225c4ce7b93dfef130da026e654",
                 "shasum": ""
             },
             "require": {
@@ -1276,7 +1326,7 @@
                 "nette",
                 "orm"
             ],
-            "time": "2015-05-17 21:25:28"
+            "time": "2015-05-22 16:13:23"
         },
         {
             "name": "kdyby/doctrine-cache",
@@ -1431,12 +1481,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kdyby/ElasticSearch.git",
-                "reference": "065822482dd4f4daafd7750ff401c587479a7c88"
+                "reference": "3cf7d7d2c812a0ae51bded0f99bf32f9a83cb1dd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kdyby/ElasticSearch/zipball/065822482dd4f4daafd7750ff401c587479a7c88",
-                "reference": "065822482dd4f4daafd7750ff401c587479a7c88",
+                "url": "https://api.github.com/repos/Kdyby/ElasticSearch/zipball/3cf7d7d2c812a0ae51bded0f99bf32f9a83cb1dd",
+                "reference": "3cf7d7d2c812a0ae51bded0f99bf32f9a83cb1dd",
                 "shasum": ""
             },
             "require": {
@@ -1504,7 +1554,7 @@
                 "nette",
                 "search"
             ],
-            "time": "2015-05-09 20:42:44"
+            "time": "2015-05-25 18:22:59"
         },
         {
             "name": "kdyby/events",
@@ -3260,7 +3310,8 @@
         "kdyby/doctrine": 20,
         "kdyby/doctrine-search": 20,
         "kdyby/elastic-search": 20,
-        "doctrine/search": 20
+        "doctrine/search": 20,
+        "kdyby/bootstrap-form-renderer": 20
     },
     "prefer-stable": false,
     "prefer-lowest": false,
