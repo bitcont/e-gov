@@ -16,58 +16,118 @@ class ListPresenter extends BasePresenter
 
 	protected $entityManager;
 	protected $searchManager;
-	protected $container;
 
 
-	public function __construct(EntityManager $entityManager, SearchManager $searchManager, Container $container)
+	public function __construct(EntityManager $entityManager, SearchManager $searchManager)
 	{
 		$this->entityManager = $entityManager;
 		$this->searchManager = $searchManager;
-		$this->container = $container;
+	}
+
+	/**
+	 * @param string $search
+	 * @param string $municipalities
+	 */
+	public function renderDefault($search = NULL, $municipalities = NULL)
+	{
+		if ($municipalities) {
+			$municipalities = explode(',', $municipalities);
+
+		} else {
+			$municipalities = [];
+		}
+
+		$settings = $this->container->getParameters();
+		$this->template->records = [];
+
+		foreach ($this->getRecords($search, $municipalities) as $record) {
+			$recordData = [
+				'id' => $record->getId(),
+				'title' => $record->title,
+				'publishedFrom' => $record->publishedFrom,
+				'publishedTo' => $record->publishedTo,
+				'issueIdentifier' => $record->issueIdentifier,
+				'docs' => [],
+				'municipality' => $record->getMunicipality()->name,
+			];
+
+			foreach ($record->getDocuments() as $document) {
+				$recordData['docs'][] = [
+					'id' => $document->getId(),
+					'fileName' => $document->fileName,
+					'href' => $document->googleDriveFileName ? $settings['google']['folderUrl'] . '/' . $document->googleDriveFileName : NULL
+				];
+			}
+
+			$this->template->records[] = $recordData;
+		}
+
+
+		$this->getComponent('searchForm')->setDefaults([
+			'search' => $search,
+			'municipalities' => $municipalities
+
+		]);
 	}
 
 
-	public function renderDefault($search = NULL)
+	protected function createComponentSearchForm()
 	{
+		$form = new Form;
+		$form->setMethod('GET');
 
-//		print_r($this->template);
-//		die();
+
+		$form->addText('search');
+		$form->addMultiSelect('municipalities', 'Municipality', $this->getMunicipalityOptions());
 
 
-		$settings = $this->container->getParameters();
+
+
+		$form->addSubmit('submit', 'Search');
+		$form->setRenderer(new BootstrapRenderer);
+		$form->onSuccess[] = [$this, 'searchFormSucceeded'];
+		return $form;
+	}
+
+
+	public function searchFormSucceeded(Form $form, $values)
+	{
+		$params = [
+			'search' => $values->search,
+			'municipalities' => implode(',', $values->municipalities)
+		];
+
+
+		$this->redirect('default', $params);
+	}
+
+
+	protected function getMunicipalityOptions()
+	{
+		$options = [];
+
+		foreach ($this->entityManager->getRepository('Bitcont\EGov\Gov\Municipality')->findAll() as $municipality) {
+			$options[$municipality->getId()] = $municipality->name;
+		}
+
+		return $options;
+	}
+
+
+	/**
+	 * @param string $search
+	 * @param int[] $municipalities
+	 * @return array
+	 */
+	protected function getRecords($search = NULL, array $municipalities = NULL)
+	{
 		$em = $this->entityManager;
-		$template['records'] = [];
+
+
+
+
 
 		if ($search) {
-
-
-
-
-
-//			$document = $em->getRepository('Bitcont\EGov\Bulletin\Document')->findOneBy(['id' => 7]);
-////			$document->plainText = 'necum ' . $document->plainText;
-//			$this->searchManager->persist($document);
-//			$this->searchManager->flush();
-//			die();
-
-
-
-//			foreach ($em->getRepository('Bitcont\EGov\Bulletin\Document')->findAll() as $document) {
-//				if (!$document->plainText) continue;
-//				$this->searchManager->persist($document);
-//			}
-//			$documents = $em->getRepository('Bitcont\EGov\Bulletin\Document')->findAll();
-//			$this->searchManager->persist($documents);
-//
-//			$this->searchManager->flush();
-//			die();
-
-
-
-//
-////			print_r($this->searchManager);
-//			echo "x";
-//			die();
 
 
 			$paginator = new Paginator;
@@ -80,33 +140,6 @@ class ListPresenter extends BasePresenter
 
 			$documents = $searchQuery->getResult();
 			$paginator->setItemCount($searchQuery->count());
-
-
-//			scanAndScroll()
-
-
-
-
-
-
-//			$entity = $em
-//				->getRepository('MyBundle:MyEntity')
-//				->createQueryBuilder('e')
-//				->join('e.idRelatedEntity', 'r')
-//				->where('r.foo = 1')
-//				->getQuery()
-//				->getResult();
-
-
-//			// search in documents
-//			$documents = $em->getRepository('Bitcont\EGov\Bulletin\Document')
-//				->createQueryBuilder('d')
-//				->andWhere('d.plainText LIKE :searchPhrase')
-//				->setParameter('searchPhrase', "%$searchPhrase%")
-//				->getQuery()
-//				->getResult();
-
-
 
 
 			$records = [];
@@ -123,62 +156,23 @@ class ListPresenter extends BasePresenter
 
 
 
-
-		usort($records, function($a, $b) {
-			return $a->getId() - $b->getId();
-		});
-
-
-
-
-		foreach ($records as $record) {
-			$recordData = [
-				'id' => $record->getId(),
-				'title' => $record->title,
-				'showFrom' => $record->showFrom,
-				'showTo' => $record->showTo,
-				'issueIdentifier' => $record->issueIdentifier,
-				'docs' => []
-			];
-
-			foreach ($record->getDocuments() as $document) {
-				$recordData['docs'][] = [
-					'id' => $document->getId(),
-					'fileName' => $document->fileName,
-					'href' => $document->googleDriveFileName ? $settings['google']['folderUrl'] . '/' . $document->googleDriveFileName : NULL
-				];
+		// filter by municipality
+		if ($municipalities) {
+			foreach ($records as $key => $record) {
+				if (!in_array($record->getMunicipality()->getId(), $municipalities)) {
+					unset($records[$key]);
+				}
 			}
-
-			$template['records'][] = $recordData;
 		}
 
 
-		$this->fillTemplate($this->container, $template);
+
+
+		// sort by id
+		usort($records, function ($a, $b) {
+			return $a->getId() - $b->getId();
+		});
+
+		return $records;
 	}
-
-
-	protected function createComponentSearchForm()
-	{
-		$form = new Form;
-		$form->setMethod('GET');
-		$form->addText('search');
-		$form->addSubmit('submit', 'Search');
-		$form->setRenderer(new BootstrapRenderer);
-		$form->onSuccess[] = [$this, 'searchFormSucceeded'];
-		return $form;
-	}
-
-
-	public function searchFormSucceeded(Form $form, $values)
-	{
-
-
-
-//		print_r($values);
-//		die();
-
-
-		$this->redirect('default', $values->search);
-	}
-
 }

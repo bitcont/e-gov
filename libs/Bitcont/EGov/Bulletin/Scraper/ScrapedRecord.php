@@ -2,9 +2,10 @@
 
 namespace Bitcont\EGov\Bulletin\Scraper;
 
-use DateTime,
-	Bitcont\EGov\Bulletin\Record,
-	Bitcont\EGov\Bulletin\Document;
+use DateTime;
+use Bitcont\EGov\Bulletin\Record;
+use Bitcont\EGov\Bulletin\Document;
+use Bitcont\EGov\Gov\Municipality;
 
 
 class ScrapedRecord
@@ -25,22 +26,16 @@ class ScrapedRecord
 	public $url;
 
 	/**
-	 * Title.
-	 *
 	 * @var string
 	 */
 	public $title;
 
 	/**
-	 * Department.
-	 *
 	 * @var string
 	 */
 	public $department;
 
 	/**
-	 * Category.
-	 *
 	 * @var string
 	 */
 	public $category;
@@ -67,35 +62,29 @@ class ScrapedRecord
 	public $addressee;
 
 	/**
-	 * Beginning of display.
-	 *
 	 * @var DateTime
 	 */
-	public $showFrom;
+	public $publishedFrom;
 
 	/**
-	 * End of display.
-	 *
 	 * @var DateTime
 	 */
-	public $showTo;
+	public $publishedTo;
 
 	/**
-	 * List of documents.
-	 *
 	 * @var ScrapedDocument[]
 	 */
 	public $documents = [];
 
 
 	/**
-	 * Creates Record instance from itself.
+	 * Assembles Record instance from itself.
 	 *
 	 * @return Record
 	 */
-	public function getRecord()
+	public function getRecord(Municipality $municipality)
 	{
-		$record = new Record;
+		$record = new Record($municipality);
 
 		$record->hash = $this->hash;
 		$record->url = $this->url;
@@ -105,8 +94,8 @@ class ScrapedRecord
 		$record->issueIdentifier = $this->issueIdentifier;
 		$record->originator = $this->originator;
 		$record->addressee = $this->addressee;
-		$record->showFrom = $this->showFrom;
-		$record->showTo = $this->showTo;
+		$record->publishedFrom = $this->publishedFrom;
+		$record->publishedTo = $this->publishedTo;
 
 		// documents
 		foreach ($this->documents as $scrapedDocument) {

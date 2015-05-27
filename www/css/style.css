@@ -13,8 +13,10 @@ html, body {
 
 #push, footer {
 	height: 100px;
-	/*padding-top: 20px;*/
-	/*padding-bottom: 20px;*/
+}
+
+footer {
+	padding-top: 20px;
 }
 
 div.header-container {

@@ -7,6 +7,7 @@
 
 	<link rel="stylesheet" href="//bootswatch.com/united/bootstrap.min.css">
 	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+	<link rel="stylesheet" href="{$basePath}/js/bootstrap-multiselect/bootstrap-multiselect.css">
 
 
 	<link rel="stylesheet" href="{$basePath}/css/style.css">
@@ -51,7 +52,7 @@
 					</ul>
 					<ul class="nav navbar-nav pull-right">
 						<li>
-							<a href="{link List:}">Kontakt</a>
+							<a href="{link StaticPages:contact}">Kontakt</a>
 						</li>
 					</ul>
 				</div>
@@ -64,13 +65,6 @@
 			<div n:foreach="$flashes as $flash" n:class="flash, $flash->type">{$flash->message}</div>
 
 			{include content}
-
-			{block scripts}
-				<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
-				<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
-				<script src="//nette.github.io/resources/js/netteForms.min.js"></script>
-				<script src="{$basePath}/js/main.js"></script>
-			{/block}
 		</div>
 
 		<div id="push"></div>
@@ -78,14 +72,22 @@
 
 	<footer class="footer">
 		<div class="container">
-			<a href="{link List:}">Contact</a>
+			<a href="{link StaticPages:contact}">Contact</a>
 			<span class="text-muted">&nbsp;&nbsp;|&nbsp;&nbsp;</span>
-			<a href="{link List:}">Press</a>
+			<a href="{link List:}">Odkaz</a>
 
 			<div>
 				<small class="text-muted">This site is not affiliated with Bondora. Peerlan does not provide investment advice. Investment decisions are made by users at their own risk.</small>
 			</div>
 		</div>
 	</footer>
+
+	{block scripts}
+		<script src="//code.jquery.com/jquery-1.11.2.min.js"></script>
+		<script src="//netdna.bootstrapcdn.com/bootstrap/3.0.3/js/bootstrap.min.js"></script>
+		<script src="//nette.github.io/resources/js/netteForms.min.js"></script>
+		<script src="{$basePath}/js/bootstrap-multiselect/bootstrap-multiselect.js"></script>
+		<script src="{$basePath}/js/main.js"></script>
+	{/block}
 </body>
 </html>

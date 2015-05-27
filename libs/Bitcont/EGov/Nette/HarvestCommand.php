@@ -5,7 +5,7 @@ namespace Bitcont\EGov\Nette;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Bitcont\EGov\Bulletin\Scraper\Praha2;
+use Bitcont\EGov\Gov\Municipality;
 use Bitcont\EGov\Bulletin\Harvester;
 use Bitcont\EGov\Bulletin\Record;
 use Bitcont\Google\Drive;
@@ -22,6 +22,12 @@ class HarvestCommand extends Command
 	 */
 	public $entityManager;
 
+	/**
+	 * @inject
+	 * @var \Nette\DI\Container
+	 */
+	public $container;
+
 
 	protected function configure()
 	{
@@ -36,43 +42,133 @@ class HarvestCommand extends Command
 	{
 		$em = $this->entityManager;
 		$params = $this->getHelper('container')->getContainer()->getParameters();
-		$drive = new Drive($params['google']['accountFile'], $params['google']['folderId'], $params['google']['tempFolderId']);
-		$harvester = new Harvester($em, $drive);
-
-
-		$records = [];
+		$googleDrive = new Drive($params['google']['accountFile'], $params['google']['folderId'], $params['google']['tempFolderId']);
+		$harvester = new Harvester($em, $googleDrive);
 
 		if ($input->getOption('redo')) {
-			foreach ($harvester->getFailedRecords() as $record) {
-				$harvester->harvestRecord($record);
-				$output->writeLn(" -> " . static::getPrintInfo($record));
-			}
+//			foreach ($harvester->getFailedRecords() as $record) {
+//				$harvester->harvestDocuments($record);
+//				$output->writeLn(" -> " . static::getPrintInfo($record));
+//			}
 
 		} else {
-			$output->writeLn('=== Praha 2 ===');
+			$this->fixtureMunicipalities();
 
-			$scraper = new Praha2;
-			$i = 0;
-			foreach ($scraper->scrape() as $scrapedRecord) {
-				try {
-					$record = $harvester->saveRecord($scrapedRecord);
-					$harvester->harvestRecord($record);
+			foreach ($this->getMunicipalities() as $municipality) {
+				$output->writeLn("\n=== " . $municipality->name . ' ===');
 
-				} catch (Exception $e) {
-					if ($e->getCode() === Harvester::EXCEPTION_RECORD_ALREADY_IN_DB) {
-						$record = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findOneBy(['hash' => $scrapedRecord->hash]);
-
-					} else {
-						throw $e;
-					}
+				$scraper = $municipality->selectScraper($this->getScrapers());
+				if (!$scraper) {
+					$output->writeLn(' ---> no scraper found');
+					continue;
 				}
 
-				$i++;
-				$output->writeLn(" -> [$i] " . static::getPrintInfo($record));
+				$output->writeLn(' ---> using scraper ' . get_class($scraper));
+
+				$i = 0;
+				foreach ($scraper->scrape() as $scrapedRecord) {
+					try {
+						$record = $harvester->saveRecord($municipality, $scrapedRecord);
+						$harvester->harvestDocuments($record);
+
+					} catch (Exception $e) {
+						if ($e->getCode() === Harvester::EXCEPTION_RECORD_ALREADY_IN_DB) {
+							$record = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findOneBy(['hash' => $scrapedRecord->hash]);
+
+						} else {
+							throw $e;
+						}
+					}
+
+					$i++;
+					$output->writeLn(" -> [$i] " . static::getPrintInfo($record));
+				}
 			}
+
+
+
+//			foreach ($this->getScrapers() as $scraper) {
+//				$output->writeLn("\n=== " . get_class($scraper) . ' ===');
+//
+//				$i = 0;
+//				foreach ($scraper->scrape() as $scrapedRecord) {
+//					try {
+//						$record = $harvester->saveRecord($scrapedRecord);
+//						$harvester->harvestDocuments($record);
+//
+//					} catch (Exception $e) {
+//						if ($e->getCode() === Harvester::EXCEPTION_RECORD_ALREADY_IN_DB) {
+//							$record = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findOneBy(['hash' => $scrapedRecord->hash]);
+//
+//						} else {
+//							throw $e;
+//						}
+//					}
+//
+//					$i++;
+//					$output->writeLn(" -> [$i] " . static::getPrintInfo($record));
+//				}
+//			}
+
 		}
 
 		return 0; // zero return code means everything is ok
+	}
+
+
+	/**
+	 * @return \Bitcont\EGov\Bulletin\Scraper\IScraper[]
+	 */
+	protected function getScrapers()
+	{
+		$scrapers = [];
+
+		foreach ($this->container->findByType('\Bitcont\EGov\Bulletin\Scraper\IScraper') as $serviceName) {
+			$scrapers[] = $this->container->getService($serviceName);
+		}
+
+		return $scrapers;
+	}
+
+
+	/**
+	 * @return Municipality[]
+	 */
+	protected function getMunicipalities()
+	{
+		return $this->entityManager->getRepository('Bitcont\EGov\Gov\Municipality')->findAll();
+	}
+
+
+	protected function fixtureMunicipalities()
+	{
+		$municipalities = [
+			['Praha 1', ''],
+			['Praha 2', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha2']
+		];
+
+
+		$em = $this->entityManager;
+
+		foreach ($municipalities as $data) {
+
+			// record already in db
+			$municipality = $em->getRepository('Bitcont\EGov\Gov\Municipality')->findOneBy(['scraperName' =>  $data[1]]);
+			if ($municipality) continue;
+
+			$municipality = new Municipality;
+			$municipality->name = $data[0];
+			$municipality->scraperName = $data[1];
+
+			$em->persist($municipality);
+		}
+
+		try {
+			$em->flush();
+
+		} catch (\Doctrine\DBAL\Exception\UniqueConstraintViolationException $e) {
+			// fail silently
+		}
 	}
 
 

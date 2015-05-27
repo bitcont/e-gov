@@ -2,12 +2,12 @@
 
 namespace Bitcont\EGov\Bulletin;
 
-use Doctrine\ORM\EntityManager,
-	Doctrine\Common\Collections\Criteria,
-	Bitcont\EGov\Bulletin\Record,
-	Bitcont\EGov\Bulletin\Scraper\ScrapedRecord,
-	Bitcont\Google\Drive,
-	Exception;
+use Doctrine\ORM\EntityManager;
+use	Doctrine\Common\Collections\Criteria;
+use Bitcont\EGov\Gov\Municipality;
+use Bitcont\EGov\Bulletin\Scraper\ScrapedRecord;
+use Bitcont\Google\Drive;
+use Exception;
 
 
 class Harvester
@@ -30,27 +30,26 @@ class Harvester
 	 *
 	 * @var Drive
 	 */
-	protected $drive;
+	protected $googleDrive;
 
 
 	/**
 	 * @param EntityManager $entityManager
-	 * @param Drive $drive
+	 * @param Drive $googleDrive
 	 */
-	public function __construct(EntityManager $entityManager, Drive $drive)
+	public function __construct(EntityManager $entityManager, Drive $googleDrive)
 	{
 		$this->entityManager = $entityManager;
-		$this->drive = $drive;
+		$this->googleDrive = $googleDrive;
 	}
 
 
 	/**
 	 * Saves scraped record to db.
 	 *
-	 * @param ScrapedRecord $scrapedRecord
 	 * @return Record
 	 */
-	public function saveRecord(ScrapedRecord $scrapedRecord)
+	public function saveRecord(Municipality $municipality, ScrapedRecord $scrapedRecord)
 	{
 		$em = $this->entityManager;
 
@@ -59,10 +58,10 @@ class Harvester
 		if ($record) throw new Exception('Record already in database', static::EXCEPTION_RECORD_ALREADY_IN_DB);
 
 		// new record
-		$record = $scrapedRecord->getRecord();
+		$record = $scrapedRecord->getRecord($municipality);
 		$em->persist($record);
 
-		// persist documents
+		// save documents
 		foreach ($record->getDocuments() as $document) {
 			$em->persist($document);
 		}
@@ -77,10 +76,10 @@ class Harvester
 	 *
 	 * @param Record $record
 	 */
-	public function harvestRecord(Record $record)
+	public function harvestDocuments(Record $record)
 	{
 		$em = $this->entityManager;
-		$drive = $this->drive;
+		$googleDrive = $this->googleDrive;
 
 		try {
 			foreach ($record->getDocuments() as $document) {
@@ -92,7 +91,7 @@ class Harvester
 					stream_copy_to_stream(fopen($document->url, 'r'), $tmpFile);
 
 					$uploadedFileName = $document->getId() . '_' . $document->fileName;
-					$uploadedFile = $drive->upload($filePath, $uploadedFileName);
+					$uploadedFile = $googleDrive->upload($filePath, $uploadedFileName);
 					$document->googleDriveId = $uploadedFile->getId();
 					$document->googleDriveFileName = $uploadedFileName;
 
@@ -101,9 +100,9 @@ class Harvester
 
 				// parse
 				if ($document->plainText === NULL) {
-					if (!isset($uploadedFile)) $uploadedFile = $drive->getFile($document->googleDriveId);
+					if (!isset($uploadedFile)) $uploadedFile = $googleDrive->getFile($document->googleDriveId);
 
-					$plainText = $drive->getPlainText($uploadedFile);
+					$plainText = $googleDrive->getPlainText($uploadedFile);
 					$document->plainText = $plainText;
 
 					$em->flush();
@@ -124,6 +123,7 @@ class Harvester
 //			$em->remove($record);
 //			$em->flush();
 //			throw $e;
+
 		}
 	}
 

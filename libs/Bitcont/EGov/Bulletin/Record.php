@@ -2,8 +2,9 @@
 
 namespace Bitcont\EGov\Bulletin;
 
-use Doctrine\ORM\Mapping as ORM,
-	Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Bitcont\EGov\Gov\Municipality;
 
 
 /**
@@ -13,14 +14,24 @@ class Record
 {
 	
 	/**
-	 * Id.
-	 * 
 	 * @ORM\Id
 	 * @ORM\Column(type = "integer")
 	 * @ORM\GeneratedValue
 	 * @var int
 	 */
 	protected $id;
+
+	/**
+	 * @ORM\OneToMany(targetEntity = "Bitcont\EGov\Bulletin\Document", mappedBy = "record")
+	 * @var ArrayCollection
+	 */
+	protected $documents;
+
+	/**
+	 * @ORM\ManyToOne(targetEntity = "Bitcont\EGov\Gov\Municipality", inversedBy = "bulletinRecords")
+	 * @var Municipality
+	 */
+	protected $municipality;
 
 	/**
 	 * Control hash.
@@ -39,24 +50,18 @@ class Record
 	public $url;
 
 	/**
-	 * Title.
-	 * 
 	 * @ORM\Column(type = "string")
 	 * @var string
 	 */
 	public $title;
 
 	/**
-	 * Department.
-	 *
 	 * @ORM\Column(type = "string")
 	 * @var string
 	 */
 	public $department;
 
 	/**
-	 * Category.
-	 *
 	 * @ORM\Column(type = "string")
 	 * @var string
 	 */
@@ -87,43 +92,31 @@ class Record
 	public $addressee;
 
 	/**
-	 * Beginning of display.
-	 *
 	 * @ORM\Column(type = "date")
-	 * @var DateTime
+	 * @var \DateTime
 	 */
-	public $showFrom;
+	public $publishedFrom;
 
 	/**
-	 * End of display.
-	 *
 	 * @ORM\Column(type = "date")
-	 * @var DateTime
+	 * @var \DateTime
 	 */
-	public $showTo;
+	public $publishedTo;
 
 
 	/**
-	 * Documents.
-	 *
-	 * @ORM\OneToMany(targetEntity = "Bitcont\EGov\Bulletin\Document", mappedBy = "record")
-	 * @var ArrayCollection
+	 * @param Municipality $municipality
 	 */
-	protected $documents;
-
-
-	/**
-	 * Constructor.
-	 */
-	public function __construct()
+	public function __construct(Municipality $municipality)
 	{
 		$this->documents = new ArrayCollection;
+
+		$this->municipality = $municipality;
+		$municipality->getBulletinRecords()->add($this);
 	}
 
 
 	/**
-	 * Returns id.
-	 *
 	 * @return int
 	 */
 	public function getId()
@@ -133,13 +126,20 @@ class Record
 
 
 	/**
-	 * Returns documents.
-	 *
 	 * @return ArrayCollection
 	 */
 	public function getDocuments()
 	{
 		return $this->documents;
+	}
+
+
+	/**
+	 * @return Municipality
+	 */
+	public function getMunicipality()
+	{
+		return $this->municipality;
 	}
 }
 

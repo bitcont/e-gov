@@ -10,12 +10,18 @@ use Nette\DI\Container;
 abstract class BasePresenter extends Presenter
 {
 
-//	protected function fillTemplate(Template $template, Container $container, array $variables)
-	public function fillTemplate(Container $container, array $variables)
+	/**
+	 * @var \Nette\DI\Container
+	 * @inject
+	 */
+	public $container;
+
+
+	public function beforeRender()
 	{
-		$settings = $container->getParameters();
+		$settings = $this->container->getParameters();
 		$this->template->brand = $settings['brand'];
 
-		$this->template->setParameters($variables);
+		return parent::beforeRender();
 	}
 }

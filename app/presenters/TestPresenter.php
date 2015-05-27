@@ -24,11 +24,6 @@ use Nette\Application\Responses\TextResponse,
 class TestPresenter extends BasePresenter
 {
 
-	/**
-	 * @var \Nette\DI\Container
-	 */
-	protected $container;
-
 
 	public function renderDefault()
 	{

@@ -50,6 +50,7 @@ doctrineSearch:
 
 services:
 	- App\Forms\SignFormFactory
+	- Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha2
 	router: App\RouterFactory::createRouter
 
 
