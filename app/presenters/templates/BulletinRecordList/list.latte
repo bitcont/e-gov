@@ -1,0 +1,65 @@
+
+<div class="row text-center" style="padding-top:20px;">
+
+	{form searchForm, class => "form-inline"}
+		<div class="form-group">
+			{input search, class => "form-control input-lg", placeholder => "Hledaný výraz"}
+		</div>
+
+		{if $showMunicipalities}
+			<div class="form-group">
+				{input municipalities, class => "apply-multiselect-plugin"}
+			</div>
+		{/if}
+
+		{input submit, class => "btn btn-lg btn-primary"}
+
+		&nbsp; <small>Nalezeno {count($bulletinRecords)} záznamů.</small>
+	{/form}
+
+</div>
+
+<br />
+<br />
+
+<table class="table table-hover">
+	<tr>
+		<th>Název</th>
+		{if $showMunicipalities}<th>Obec</th>{/if}
+		<th>Zveřejněno</th>
+		<th>Značka</th>
+		<th>Dokumenty</th>
+	</tr>
+
+	{foreach $bulletinRecords as $bulletinRecord}
+		<tr>
+			<td>
+				<a href="{link BulletinRecordDetail: $bulletinRecord['id']}">{$bulletinRecord['title']}</a>
+			</td>
+			{if $showMunicipalities}
+				<td class="text-nowrap">
+					<a href="{link BulletinRecordList:municipality $bulletinRecord['municipality']['id']}">{$bulletinRecord['municipality']['name']}</a>
+				</td>
+			{/if}
+			<td>{$bulletinRecord['publishedFrom']|date:'%d.%m.%Y'}</td>
+			<td>{$bulletinRecord['issueIdentifier']}</td>
+			<td class="text-nowrap">
+				{foreach $bulletinRecord['docs'] as $doc}
+					[{$doc['id']}]
+
+					{if $doc['href']}
+						<a href="{$doc['href']}">{$doc['fileName']|truncate:20}</a>
+
+					{else}
+						{$doc['fileName']|truncate:20}
+					{/if}
+
+					<br />
+				{/foreach}
+			</td>
+		</tr>
+	{/foreach}
+
+
+
+</table>

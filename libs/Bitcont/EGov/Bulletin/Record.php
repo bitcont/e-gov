@@ -70,7 +70,7 @@ class Record
 	/**
 	 * Issue identifier.
 	 *
-	 * @ORM\Column(type = "string")
+	 * @ORM\Column(type = "string", nullable = true)
 	 * @var string
 	 */
 	public $issueIdentifier;
@@ -78,7 +78,7 @@ class Record
 	/**
 	 * Originating subject.
 	 *
-	 * @ORM\Column(type = "string")
+	 * @ORM\Column(type = "string", nullable = true)
 	 * @var string
 	 */
 	public $originator;
@@ -86,7 +86,7 @@ class Record
 	/**
 	 * Target subject.
 	 *
-	 * @ORM\Column(type = "string")
+	 * @ORM\Column(type = "string", nullable = true)
 	 * @var string
 	 */
 	public $addressee;

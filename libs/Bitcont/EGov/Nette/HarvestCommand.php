@@ -143,7 +143,7 @@ class HarvestCommand extends Command
 	protected function fixtureMunicipalities()
 	{
 		$municipalities = [
-			['Praha 1', ''],
+			['Praha 1', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha1'],
 			['Praha 2', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha2']
 		];
 

@@ -17,6 +17,7 @@ html, body {
 
 footer {
 	padding-top: 20px;
+	background-color: #eeeeee;
 }
 
 div.header-container {
@@ -30,4 +31,14 @@ a.website-name {
 
 small.website-claim {
 	color: #90948D;
+}
+
+.btn-white {
+	color: #333333;
+	background-color: #ffffff;
+	border-color: #cccccc;
+}
+
+.btn-white:hover, .btn-white:focus {
+	color: #333333;
 }

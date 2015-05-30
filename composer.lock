@@ -696,12 +696,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/google/google-api-php-client.git",
-                "reference": "517fc2bb11d2d3cfd27af3f783fce6f2f61c688c"
+                "reference": "818b20c291b074a609da633d243bf61bcf7dfaac"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/517fc2bb11d2d3cfd27af3f783fce6f2f61c688c",
-                "reference": "517fc2bb11d2d3cfd27af3f783fce6f2f61c688c",
+                "url": "https://api.github.com/repos/google/google-api-php-client/zipball/818b20c291b074a609da633d243bf61bcf7dfaac",
+                "reference": "818b20c291b074a609da633d243bf61bcf7dfaac",
                 "shasum": ""
             },
             "require": {
@@ -730,7 +730,7 @@
             "keywords": [
                 "google"
             ],
-            "time": "2015-05-21 19:40:29"
+            "time": "2015-05-28 16:09:09"
         },
         {
             "name": "jms/metadata",
@@ -1243,12 +1243,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kdyby/Doctrine.git",
-                "reference": "c20a27d7e7c1c225c4ce7b93dfef130da026e654"
+                "reference": "fa37891a8b60f1c68ef6d349687500ec9f4abc42"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kdyby/Doctrine/zipball/c20a27d7e7c1c225c4ce7b93dfef130da026e654",
-                "reference": "c20a27d7e7c1c225c4ce7b93dfef130da026e654",
+                "url": "https://api.github.com/repos/Kdyby/Doctrine/zipball/fa37891a8b60f1c68ef6d349687500ec9f4abc42",
+                "reference": "fa37891a8b60f1c68ef6d349687500ec9f4abc42",
                 "shasum": ""
             },
             "require": {
@@ -1326,7 +1326,7 @@
                 "nette",
                 "orm"
             ],
-            "time": "2015-05-22 16:13:23"
+            "time": "2015-05-29 15:01:17"
         },
         {
             "name": "kdyby/doctrine-cache",
@@ -1770,12 +1770,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/neitanod/forceutf8.git",
-                "reference": "0fb6983af43fae715eff1bb0f3653fbabd984f15"
+                "reference": "2c1b21e00ed16b2b083ae4e27901cb5f2856db90"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/neitanod/forceutf8/zipball/0fb6983af43fae715eff1bb0f3653fbabd984f15",
-                "reference": "0fb6983af43fae715eff1bb0f3653fbabd984f15",
+                "url": "https://api.github.com/repos/neitanod/forceutf8/zipball/2c1b21e00ed16b2b083ae4e27901cb5f2856db90",
+                "reference": "2c1b21e00ed16b2b083ae4e27901cb5f2856db90",
                 "shasum": ""
             },
             "require": {
@@ -1796,7 +1796,7 @@
             ],
             "description": "PHP Class Encoding featuring popular Encoding::toUTF8() function --formerly known as forceUTF8()-- that fixes mixed encoded strings.",
             "homepage": "https://github.com/neitanod/forceutf8",
-            "time": "2015-02-10 21:22:33"
+            "time": "2015-05-07 16:37:23"
         },
         {
             "name": "nette/application",
@@ -3127,21 +3127,20 @@
         },
         {
             "name": "symfony/console",
-            "version": "v2.6.7",
-            "target-dir": "Symfony/Component/Console",
+            "version": "v2.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/Console.git",
-                "reference": "ebc5679854aa24ed7d65062e9e3ab0b18a917272"
+                "reference": "7f0bec04961c61c961df0cb8c2ae88dbfd83f399"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/Console/zipball/ebc5679854aa24ed7d65062e9e3ab0b18a917272",
-                "reference": "ebc5679854aa24ed7d65062e9e3ab0b18a917272",
+                "url": "https://api.github.com/repos/symfony/Console/zipball/7f0bec04961c61c961df0cb8c2ae88dbfd83f399",
+                "reference": "7f0bec04961c61c961df0cb8c2ae88dbfd83f399",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.3.3"
+                "php": ">=5.3.9"
             },
             "require-dev": {
                 "psr/log": "~1.0",
@@ -3157,11 +3156,11 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "2.6-dev"
+                    "dev-master": "2.7-dev"
                 }
             },
             "autoload": {
-                "psr-0": {
+                "psr-4": {
                     "Symfony\\Component\\Console\\": ""
                 }
             },
@@ -3181,7 +3180,7 @@
             ],
             "description": "Symfony Console Component",
             "homepage": "https://symfony.com",
-            "time": "2015-05-02 15:18:45"
+            "time": "2015-05-29 16:22:24"
         },
         {
             "name": "tracy/tracy",

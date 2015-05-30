@@ -78,6 +78,16 @@ class ScrapedRecord
 
 
 	/**
+	 * @param string $url Absolute URL for calculating hash
+	 */
+	public function __construct($url)
+	{
+		$this->url = $url;
+		$this->hash = sha1($this->url);
+	}
+
+
+	/**
 	 * Assembles Record instance from itself.
 	 *
 	 * @return Record

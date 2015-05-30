@@ -9,7 +9,6 @@ use DOMDocument;
 use Bitcont\EGov\Bulletin\Scraper\IScraper;
 use Bitcont\EGov\Bulletin\Scraper\ScrapedRecord;
 use Bitcont\EGov\Bulletin\Scraper\ScrapedDocument;
-use Bitcont\EGov\Gov\Municipality;
 
 
 class Praha2 implements IScraper
@@ -23,8 +22,6 @@ class Praha2 implements IScraper
 	const BASE_URL = 'http://82.208.47.250:8080/eDeska/';
 
 	/**
-	 * Homepage.
-	 *
 	 * @var string
 	 */
 	const HOMEPAGE = 'eDeskaAktualni.jsp';
@@ -78,11 +75,8 @@ class Praha2 implements IScraper
 
 				$tds = $tr->getElementsByTagName('td');
 				$itemUrl = static::BASE_URL . static::fix($tds->item(2)->getElementsByTagName('a')->item(0)->getAttribute('href'));
-				$itemHash = sha1($itemUrl);
 
-				$record = new ScrapedRecord;
-				$record->hash = $itemHash;
-				$record->url = $itemUrl;
+				$record = new ScrapedRecord($itemUrl);
 				$record->title = trim($tds->item(2)->nodeValue);
 				$record->department = trim($tds->item(0)->nodeValue);
 				$record->category = trim($tds->item(1)->nodeValue);
@@ -100,7 +94,7 @@ class Praha2 implements IScraper
 					$record->documents[] = $document;
 				}
 
-				$recordsPage[$itemHash] = $record;
+				$recordsPage[$record->hash] = $record;
 
 			}
 

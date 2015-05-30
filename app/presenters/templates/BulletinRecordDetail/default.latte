@@ -1,0 +1,13 @@
+{block content}
+
+
+
+	<h1>{$bulletinRecord['title']}</h1>
+
+	{$bulletinRecord['id']}
+
+	<a href="{link BulletinRecordList:municipality $bulletinRecord['municipality']['id']}">{$bulletinRecord['municipality']['name']}</a>
+
+
+
+{/block}
