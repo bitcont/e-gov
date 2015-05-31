@@ -1,5 +1,14 @@
 {block content}
 
-	{include 'list.latte', showMunicipalities => TRUE}
+	{include 'components/searchForm.latte', showMunicipalities => TRUE, showItemCount => FALSE}
+
+	<br />
+	<br />
+
+	<div class="row text-center">
+		<h1>Naposledy přidané záznamy</h1>
+	</div>
+
+	{include 'components/bulletinRecordTable.latte', showMunicipalities => TRUE}
 
 {/block}

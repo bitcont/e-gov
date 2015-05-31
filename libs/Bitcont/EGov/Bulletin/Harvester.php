@@ -92,9 +92,8 @@ class Harvester
 
 					$uploadedFileName = $document->getId() . '_' . $document->fileName;
 					$uploadedFile = $googleDrive->upload($filePath, $uploadedFileName);
-					$document->googleDriveId = $uploadedFile->getId();
-					$document->googleDriveFileName = $uploadedFileName;
 
+					$document->markGoogleDriveUploaded($uploadedFile->getId(), $uploadedFileName);
 					$em->flush();
 				}
 

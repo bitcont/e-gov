@@ -31,6 +31,7 @@ class RouterFactory
 //		], NULL, $entityManager);
 
 
+		$router[] = new Route('search', 'BulletinRecordList:search');
 		$router[] = new Route('<presenter>/<action>[/<id>]', 'BulletinRecordList:default');
 
 		return $router;

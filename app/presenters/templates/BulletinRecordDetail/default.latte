@@ -1,13 +1,78 @@
 {block content}
 
 
+	<div class="row text-center">
+		<h1>{$bulletinRecord['title']}</h1>
+	</div>
 
-	<h1>{$bulletinRecord['title']}</h1>
+	<div class="vertical-spacer">&nbsp;</div>
 
-	{$bulletinRecord['id']}
+	<div class="row">
+		<div class="col-md-4">
+			<dl class="dl-horizontal">
+				<dt>Úřední deska:</dt>
+				<dd><a href="{link BulletinRecordList:municipality $bulletinRecord['municipality']['id']}">{$bulletinRecord['municipality']['name']}</a></dd>
+			</dl>
+			<dl class="dl-horizontal">
+				<dt>Zveřejněno od:</dt>
+				<dd>{$bulletinRecord['publishedFrom']|date:'j. n. Y'}</dd>
+			</dl>
+			<dl class="dl-horizontal">
+				<dt>Zveřejněno do:</dt>
+				<dd>{$bulletinRecord['publishedTo']|date:'j. n. Y'}</dd>
+			</dl>
+			<dl class="dl-horizontal">
+				<dt>Útvar:</dt>
+				<dd>{$bulletinRecord['department']}</dd>
+			</dl>
+			<dl class="dl-horizontal">
+				<dt>Kategorie:</dt>
+				<dd>{$bulletinRecord['category']}</dd>
+			</dl>
+		</div>
+		<div class="col-md-8">
+			<dl class="dl-horizontal">
+				<dt>Dokumenty:</dt>
+				<dd>
+					{if $bulletinRecord['documents']}
+						{foreach $bulletinRecord['documents'] as $document}
+							{$document['format']|icon} &nbsp;<a href="{$document['url']}">{$document['fileName']}</a>
+							<br />
+						{/foreach}
 
-	<a href="{link BulletinRecordList:municipality $bulletinRecord['municipality']['id']}">{$bulletinRecord['municipality']['name']}</a>
+					{else}
+						Žádné dokumenty nepřiloženy
+					{/if}
+				</dd>
+			</dl>
+		</div>
+	</div>
 
+	<h3>Náhled dokumentů</h3>
+	{if $bulletinRecord['documents']}
+		{foreach $bulletinRecord['documents'] as $document}
 
+			<h5>{$document['format']|icon} &nbsp;<a href="{$document['url']}">{$document['fileName']}</a></h5>
+
+			{if $document['isImage']}
+				<a href="{$document['url']}" class="thumbnail">
+					<img src="{$document['url']}" alt="{$document['fileName']}" />
+				</a>
+			{else}
+				<pre>
+					{if $document['plainText']}
+						{$document['plainText']}
+					{else}
+						Náhled není k dispozici.
+					{/if}
+				</pre>
+			{/if}
+			<br />
+
+		{/foreach}
+
+	{else}
+		Žádné dokumenty nepřiloženy.
+	{/if}
 
 {/block}

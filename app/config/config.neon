@@ -7,7 +7,7 @@ parameters:
 		tempFolderId: 0B3HFawTFS6HFfkZFQWw0VG5icXNVZUJKdjBicmdoT0V5V1JfNXpJdlc5SkNtWTh0b3FmTUE
 
 	brand:
-		name: Úředky
+		name: Úřední desky
 		email: mich.spicka+uredky@gmail.com
 		claim: Všechny úřední desky na jednom místě.
 
@@ -52,6 +52,7 @@ services:
 	- App\Forms\SignFormFactory
 	- Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha1
 	- Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha2
+	- Bitcont\EGov\Db\BulletinFacade
 	router: App\RouterFactory::createRouter
 
 

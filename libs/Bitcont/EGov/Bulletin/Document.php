@@ -4,8 +4,8 @@ namespace Bitcont\EGov\Bulletin;
 
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Search\Mapping\Annotations as SEARCH;
-//use Doctrine\Search\Mapping as SEARCH;
 use JMS\Serializer\Annotation as JMS;
+use DateTime;
 
 
 /**
@@ -15,9 +15,13 @@ use JMS\Serializer\Annotation as JMS;
 class Document
 {
 	
+	const
+		FORMAT_WORD = 1,
+		FORMAT_EXCEL = 2,
+		FORMAT_PDF = 3,
+		FORMAT_IMAGE = 4;
+
 	/**
-	 * Id.
-	 * 
 	 * @ORM\Id
 	 * @ORM\Column(type = "integer")
 	 * @ORM\GeneratedValue
@@ -26,23 +30,25 @@ class Document
 	protected $id;
 
 	/**
-	 * Record.
-	 *
 	 * @ORM\ManyToOne(targetEntity = "Bitcont\EGov\Bulletin\Record", inversedBy = "documents")
 	 * @var Record
 	 */
 	protected $record;
 
 	/**
-	 * File name.
-	 * 
+	 * @ORM\Column(type = "datetime")
+	 * @var \DateTime
+	 */
+	protected $createdAt;
+
+	/**
 	 * @ORM\Column(type = "string")
 	 * @var string
 	 */
 	public $fileName;
 
 	/**
-	 * Url.
+	 * Absolute url.
 	 *
 	 * @ORM\Column(type = "string")
 	 * @var string
@@ -75,6 +81,12 @@ class Document
 	 */
 	public $googleDriveFileName;
 
+	/**
+	 * @ORM\Column(type = "datetime", nullable = true)
+	 * @var \DateTime
+	 */
+	public $googleDriveUploadedAt;
+
 
 	/**
 	 * @param Record $record
@@ -83,14 +95,11 @@ class Document
 	{
 		$this->record = $record;
 		$record->getDocuments()->add($this);
+
+		$this->createdAt = new DateTime;
 	}
 
 
-	/**
-	 * Returns id.
-	 *
-	 * @return int
-	 */
 	public function getId()
 	{
 		return $this->id;
@@ -98,13 +107,42 @@ class Document
 
 
 	/**
-	 * Returns record.
-	 *
 	 * @return Record
 	 */
 	public function getRecord()
 	{
 		return $this->record;
+	}
+
+
+	/**
+	 * @return int|NULL
+	 */
+	public function getFormat()
+	{
+		$formats = [
+			static::FORMAT_WORD => ['doc', 'docx'],
+			static::FORMAT_EXCEL => ['xls', 'xlsx'],
+			static::FORMAT_PDF => ['pdf'],
+			static::FORMAT_IMAGE => ['jpg', 'jpeg', 'png', 'gif']
+		];
+
+		$exploded = explode('.', $this->fileName);
+		$extension = mb_strtolower(end($exploded));
+
+		foreach ($formats as $format => $extensions) {
+			if (in_array($extension, $extensions)) {
+				return $format;
+			}
+		}
+	}
+
+
+	public function markGoogleDriveUploaded($googleDriveId, $googleDriveFileName)
+	{
+		$this->googleDriveId = $googleDriveId;
+		$this->googleDriveFileName = $googleDriveFileName;
+		$this->googleDriveUploadedAt = new DateTime;
 	}
 }
 

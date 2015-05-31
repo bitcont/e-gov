@@ -11,13 +11,7 @@
 
 
 	<link rel="stylesheet" href="{$basePath}/css/style.css">
-	<link rel="shortcut icon" href="{$basePath}/favicon.ico">
-
-
-
-
-
-
+	<link rel="icon" href="{$basePath}/images/logo/logo.png">
 	{block head}{/block}
 </head>
 
@@ -26,7 +20,7 @@
 	<div id="wrap">
 		<header>
 			<div class="container header-container">
-				<a href="{link BulletinRecordList:}" class="website-name">{$brand['name']}</a><br />
+				<a href="{link BulletinRecordList:}" class="website-name"><i class="fa fa-leanpub"></i> {$brand['name']}</a><br />
 				<small class="website-claim">{$brand['claim']}</small>
 			</div>
 		</header>
@@ -66,6 +60,8 @@
 
 			{include content}
 		</div>
+
+		<div class="vertical-spacer">&nbsp;</div>
 
 		<div id="push"></div>
 	</div>

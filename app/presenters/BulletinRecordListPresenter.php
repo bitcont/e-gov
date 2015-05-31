@@ -2,27 +2,32 @@
 
 namespace App\Presenters;
 
-use Doctrine\ORM\EntityManager;
-use Doctrine\Search\SearchManager;
-use Nette\DI\Container;
+
 use Nette\Application\UI\Form;
-use Nette\Utils\Paginator;
-use Bitcont\EGov\ElasticSearch\DocumentSearchQuery;
 use Bitcont\EGov\Bulletin\Record;
+use Bitcont\EGov\Db\BulletinFacade;
 use Kdyby\BootstrapFormRenderer\BootstrapRenderer;
 
 
 class BulletinRecordListPresenter extends BasePresenter
 {
 
-	protected $entityManager;
-	protected $searchManager;
+	protected $bulletinFacade;
 
 
-	public function __construct(EntityManager $entityManager, SearchManager $searchManager)
+	public function __construct(BulletinFacade $bulletinFacade)
 	{
-		$this->entityManager = $entityManager;
-		$this->searchManager = $searchManager;
+		$this->bulletinFacade = $bulletinFacade;
+	}
+
+
+	public function renderDefault()
+	{
+		$this->fillTemplateWithBulletinRecords($this->bulletinFacade->getMixedBulletinRecords());
+
+		$this->getComponent('searchForm')->setDefaults([
+			'municipalities' => array_keys($this->getMunicipalityOptions())
+		]);
 	}
 
 
@@ -30,7 +35,7 @@ class BulletinRecordListPresenter extends BasePresenter
 	 * @param string $search
 	 * @param string $municipalities
 	 */
-	public function renderDefault($search = NULL, $municipalities = NULL)
+	public function renderSearch($search = NULL, $municipalities = NULL)
 	{
 		if ($municipalities) {
 			$municipalityIds = explode(',', $municipalities);
@@ -39,7 +44,7 @@ class BulletinRecordListPresenter extends BasePresenter
 			$municipalityIds = array_keys($this->getMunicipalityOptions());
 		}
 
-		$this->fillTemplateWithBulletinRecords($this->getBulletinRecords($search, $municipalityIds));
+		$this->fillTemplateWithBulletinRecords($this->bulletinFacade->getBulletinRecords($search, $municipalityIds));
 
 		$this->getComponent('searchForm')->setDefaults([
 			'search' => $search,
@@ -55,13 +60,13 @@ class BulletinRecordListPresenter extends BasePresenter
 	 */
 	public function renderMunicipality($municipalityId, $search = NULL)
 	{
-		$municipality = $this->entityManager->getRepository('Bitcont\EGov\Gov\Municipality')->find($municipalityId);
+		$municipality = $this->bulletinFacade->getMunicipality($municipalityId);
 
 		$this->template->municipality = [
 			'name' => $municipality->name
 		];
 
-		$this->fillTemplateWithBulletinRecords($this->getBulletinRecords($search, [$municipalityId]));
+		$this->fillTemplateWithBulletinRecords($this->bulletinFacade->getBulletinRecords($search, [$municipalityId]));
 
 		$this->getComponent('searchForm')->setDefaults([
 			'search' => $search,
@@ -91,12 +96,17 @@ class BulletinRecordListPresenter extends BasePresenter
 			'search' => $values->search
 		];
 
-
 		if ($values->municipalities) {
 			$params['municipalities'] = implode(',', $values->municipalities);
 		}
 
-		$this->redirect('this', $params);
+
+		if ($this->getAction() === 'default') {
+			$this->redirect('search', $params);
+
+		} else {
+			$this->redirect('this', $params);
+		}
 	}
 
 
@@ -104,7 +114,7 @@ class BulletinRecordListPresenter extends BasePresenter
 	{
 		$options = [];
 
-		foreach ($this->getMunicipalities() as $municipality) {
+		foreach ($this->bulletinFacade->getMunicipalities() as $municipality) {
 			$options[$municipality->getId()] = $municipality->name;
 		}
 
@@ -112,74 +122,8 @@ class BulletinRecordListPresenter extends BasePresenter
 	}
 
 
-	protected function getMunicipalities()
-	{
-		return $this->entityManager->getRepository('Bitcont\EGov\Gov\Municipality')->findAll();
-	}
-
-
 	/**
-	 * @param string $search
-	 * @param int[] $municipalities
-	 * @return Record[]
-	 */
-	protected function getBulletinRecords($search = NULL, array $municipalityIds = NULL)
-	{
-		$em = $this->entityManager;
-
-
-		if ($search) {
-
-
-			$paginator = new Paginator;
-			$paginator->setItemsPerPage(500);
-
-
-			$searchQuery = (new DocumentSearchQuery($search))
-				->setPaginator($paginator)
-				->createQuery($this->searchManager, $this->entityManager);
-
-			$documents = $searchQuery->getResult();
-			$paginator->setItemCount($searchQuery->count());
-
-
-			$records = [];
-			foreach ($documents as $document) {
-				$record = $document->getRecord();
-				if (!in_array($record, $records)) {
-					$records[] = $document->getRecord();
-				}
-			}
-
-		} else {
-			$records = $em->getRepository('Bitcont\EGov\Bulletin\Record')->findAll();
-		}
-
-
-
-		// filter by municipality
-		if ($municipalityIds) {
-			foreach ($records as $key => $record) {
-				if (!in_array($record->getMunicipality()->getId(), $municipalityIds)) {
-					unset($records[$key]);
-				}
-			}
-		}
-
-
-
-
-		// sort by id
-		usort($records, function ($a, $b) {
-			return $a->getId() - $b->getId();
-		});
-
-		return $records;
-	}
-
-
-	/**
-	 * @param Record[]
+	 * @param Record[] $bulletinRecords
 	 */
 	protected function fillTemplateWithBulletinRecords(array $bulletinRecords)
 	{
@@ -205,8 +149,10 @@ class BulletinRecordListPresenter extends BasePresenter
 			foreach ($bulletinRecord->getDocuments() as $document) {
 				$bulletinRecordData['docs'][] = [
 					'id' => $document->getId(),
+					'format' => $document->getFormat(),
 					'fileName' => $document->fileName,
-					'href' => $document->googleDriveFileName ? $settings['google']['folderUrl'] . '/' . $document->googleDriveFileName : NULL
+					'href' => $document->googleDriveFileName ? $settings['google']['folderUrl'] . '/' . $document->googleDriveFileName : NULL,
+					'url' => $document->url
 				];
 			}
 

@@ -1,0 +1,19 @@
+<div class="row text-center" style="padding-top:20px;">
+	{form searchForm, class => "form-inline"}
+		<div class="form-group">
+			{input search, class => "form-control input-lg", placeholder => "Hledaný výraz"}
+		</div>
+
+		{if $showMunicipalities}
+			<div class="form-group">
+				{input municipalities, class => "apply-multiselect-plugin"}
+			</div>
+		{/if}
+
+		{input submit, class => "btn btn-lg btn-primary"}
+
+		{if $showItemCount}
+			&nbsp; <small>Nalezeno {count($bulletinRecords)} záznamů.</small>
+		{/if}
+	{/form}
+</div>

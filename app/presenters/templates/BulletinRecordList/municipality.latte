@@ -1,7 +1,14 @@
 {block content}
 
-	<h1>Úřední deska {$municipality['name']}</h1>
+	<div class="row text-center">
+		<h1>Úřední deska {$municipality['name']}</h1>
+	</div>
 
-	{include 'list.latte', showMunicipalities => FALSE}
+	{include 'components/searchForm.latte', showMunicipalities => FALSE, showItemCount => TRUE}
+
+	<br />
+	<br />
+
+	{include 'components/bulletinRecordTable.latte', showMunicipalities => FALSE}
 
 {/block}

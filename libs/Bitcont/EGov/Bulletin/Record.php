@@ -5,6 +5,7 @@ namespace Bitcont\EGov\Bulletin;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\Common\Collections\ArrayCollection;
 use Bitcont\EGov\Gov\Municipality;
+use DateTime;
 
 
 /**
@@ -22,16 +23,22 @@ class Record
 	protected $id;
 
 	/**
+	 * @ORM\ManyToOne(targetEntity = "Bitcont\EGov\Gov\Municipality", inversedBy = "bulletinRecords")
+	 * @var Municipality
+	 */
+	protected $municipality;
+
+	/**
 	 * @ORM\OneToMany(targetEntity = "Bitcont\EGov\Bulletin\Document", mappedBy = "record")
 	 * @var ArrayCollection
 	 */
 	protected $documents;
 
 	/**
-	 * @ORM\ManyToOne(targetEntity = "Bitcont\EGov\Gov\Municipality", inversedBy = "bulletinRecords")
-	 * @var Municipality
+	 * @ORM\Column(type = "datetime")
+	 * @var \DateTime
 	 */
-	protected $municipality;
+	protected $createdAt;
 
 	/**
 	 * Control hash.
@@ -109,10 +116,11 @@ class Record
 	 */
 	public function __construct(Municipality $municipality)
 	{
-		$this->documents = new ArrayCollection;
-
 		$this->municipality = $municipality;
 		$municipality->getBulletinRecords()->add($this);
+
+		$this->documents = new ArrayCollection;
+		$this->createdAt = new DateTime;
 	}
 
 
