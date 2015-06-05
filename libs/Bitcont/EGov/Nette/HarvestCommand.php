@@ -144,7 +144,8 @@ class HarvestCommand extends Command
 	{
 		$municipalities = [
 			['Praha 1', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha1'],
-			['Praha 2', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha2']
+			['Praha 2', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha2'],
+			['Praha 3', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha3']
 		];
 
 

@@ -5,7 +5,7 @@ namespace Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha;
 use Bitcont\EGov\Bulletin\Scraper\Scrapers\EDeska;
 
 
-class Praha2 extends EDeska
+class Praha3 extends EDeska
 {
 
 	/**
@@ -13,7 +13,7 @@ class Praha2 extends EDeska
 	 *
 	 * @var string
 	 */
-	const BASE_URL = 'http://82.208.47.250:8080/eDeska/';
+	const BASE_URL = 'http://www.praha3.cz/eDeska/';
 
 	/**
 	 * @var string
