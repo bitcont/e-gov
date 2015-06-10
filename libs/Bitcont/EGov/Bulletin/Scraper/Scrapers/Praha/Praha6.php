@@ -12,7 +12,7 @@ use Bitcont\EGov\Bulletin\Scraper\ScrapedDocument;
 
 
 
-class Praha1 implements IScraper
+class Praha6 implements IScraper
 {
 
 	/**
@@ -20,12 +20,21 @@ class Praha1 implements IScraper
 	 *
 	 * @var string
 	 */
-	const BASE_URL = 'http://www.praha1.cz/';
+	const BASE_URL = 'http://www.praha6.cz/tabule';
 
 	/**
+	 * Resource base url.
+	 *
 	 * @var string
 	 */
-	const HOMEPAGE = 'cps/rde/xchg/praha1new/xsl/uredni-deska.html';
+	const LISTPAGE = '/?vynechat=';
+
+	/**
+	 * Results per page. Only 25 is allowed.
+	 *
+	 * @var int
+	 */
+	const STEP = 25;
 
 
 	/**
@@ -53,22 +62,51 @@ class Praha1 implements IScraper
 	 */
 	protected function scrapeRecordList()
 	{
-		$homepage = static::BASE_URL . static::HOMEPAGE;
+		$listPageBase = static::BASE_URL . static::LISTPAGE;
 		$itemUrls = [];
+		$offset = 0;
 
-		$request = new Request($homepage);
-		$response = $request->get()->getResponse();
 
-		// parse response into DOM
-		libxml_use_internal_errors(TRUE);
-		$dom = new DOMDocument;
-		$dom->loadHTML($response);
-		libxml_clear_errors();
-		libxml_use_internal_errors(FALSE);
+		do {
+			$listPage = $listPageBase . $offset;
 
-		foreach ($dom->getElementsByTagName('h3') as $h3) {
-			$itemUrls[] = static::BASE_URL . $h3->getElementsByTagName('a')->item(0)->getAttribute('href');
-		}
+
+			echo $listPage;
+
+			$request = new Request($listPage);
+			$response = $request->get()->getResponse();
+
+
+			echo " x $response x ";
+
+
+			// parse response into DOM
+			$dom = new DOMDocument;
+			$dom->loadHTML($response);
+
+
+			echo " a ";
+
+			echo $dom->nodeValue;
+
+
+
+//			foreach ($dom->getElementsByTagName('h3') as $h3) {
+//				$itemUrls[] = static::BASE_URL . $h3->getElementsByTagName('a')->item(0)->getAttribute('href');
+//			}
+
+
+
+			$offset = $offset + static::STEP;
+
+			die();
+
+		} while (1 === 2);
+
+
+
+
+
 
 		return $itemUrls;
 	}

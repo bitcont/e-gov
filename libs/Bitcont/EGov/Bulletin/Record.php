@@ -51,25 +51,31 @@ class Record
 	/**
 	 * Source url.
 	 *
-	 * @ORM\Column(type = "string")
+	 * @ORM\Column(type = "text")
 	 * @var string
 	 */
 	public $url;
 
 	/**
-	 * @ORM\Column(type = "string")
+	 * @ORM\Column(type = "text")
 	 * @var string
 	 */
 	public $title;
 
 	/**
-	 * @ORM\Column(type = "string")
+	 * @ORM\Column(type = "text", nullable = true)
+	 * @var string
+	 */
+	public $description;
+
+	/**
+	 * @ORM\Column(type = "string", nullable = true)
 	 * @var string
 	 */
 	public $department;
 
 	/**
-	 * @ORM\Column(type = "string")
+	 * @ORM\Column(type = "string", nullable = true)
 	 * @var string
 	 */
 	public $category;
@@ -105,7 +111,7 @@ class Record
 	public $publishedFrom;
 
 	/**
-	 * @ORM\Column(type = "date")
+	 * @ORM\Column(type = "date", nullable = true)
 	 * @var \DateTime
 	 */
 	public $publishedTo;
@@ -148,6 +154,17 @@ class Record
 	public function getMunicipality()
 	{
 		return $this->municipality;
+	}
+
+
+	/**
+	 * @return bool
+	 */
+	public function hasDescription()
+	{
+		if (!$this->description) return FALSE;
+		if ($this->description === $this->title) return FALSE;
+		return TRUE;
 	}
 }
 

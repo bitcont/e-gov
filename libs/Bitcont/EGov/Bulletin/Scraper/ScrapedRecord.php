@@ -33,6 +33,11 @@ class ScrapedRecord
 	/**
 	 * @var string
 	 */
+	public $description;
+
+	/**
+	 * @var string
+	 */
 	public $department;
 
 	/**
@@ -99,6 +104,7 @@ class ScrapedRecord
 		$record->hash = $this->hash;
 		$record->url = $this->url;
 		$record->title = $this->title;
+		$record->description = $this->description;
 		$record->department = $this->department;
 		$record->category = $this->category;
 		$record->issueIdentifier = $this->issueIdentifier;

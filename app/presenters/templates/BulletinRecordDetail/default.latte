@@ -19,16 +19,26 @@
 			</dl>
 			<dl class="dl-horizontal">
 				<dt>Zveřejněno do:</dt>
-				<dd>{$bulletinRecord['publishedTo']|date:'j. n. Y'}</dd>
+				<dd>
+					{if $bulletinRecord['publishedTo']}
+						{$bulletinRecord['publishedTo']|date:'j. n. Y'}
+					{else}
+						nepodařilo se zjistit
+					{/if}
+				</dd>
 			</dl>
-			<dl class="dl-horizontal">
-				<dt>Útvar:</dt>
-				<dd>{$bulletinRecord['department']}</dd>
-			</dl>
-			<dl class="dl-horizontal">
-				<dt>Kategorie:</dt>
-				<dd>{$bulletinRecord['category']}</dd>
-			</dl>
+			{if $bulletinRecord['department']}
+				<dl class="dl-horizontal">
+					<dt>Útvar:</dt>
+					<dd>{$bulletinRecord['department']}</dd>
+				</dl>
+			{/if}
+			{if $bulletinRecord['category']}
+				<dl class="dl-horizontal">
+					<dt>Kategorie:</dt>
+					<dd>{$bulletinRecord['category']}</dd>
+				</dl>
+			{/if}
 		</div>
 		<div class="col-md-8">
 			<dl class="dl-horizontal">
@@ -47,6 +57,17 @@
 			</dl>
 		</div>
 	</div>
+
+	{if $bulletinRecord['hasDescription']}
+		<div class="row">
+			<div class="col-md-12">
+				<dl class="dl-horizontal">
+					<dt>Shrnutí:</dt>
+					<dd>{$bulletinRecord['description']}</dd>
+				</dl>
+			</div>
+		</div>
+	{/if}
 
 	<h3>Náhled dokumentů</h3>
 	{if $bulletinRecord['documents']}

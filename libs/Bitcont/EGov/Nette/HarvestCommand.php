@@ -147,6 +147,7 @@ class HarvestCommand extends Command
 			['Praha 2', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha2'],
 			['Praha 3', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha3'],
 			['Praha 4', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha4'],
+			['Praha 5', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha5'],
 			['Praha 10', 'Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha10']
 		];
 

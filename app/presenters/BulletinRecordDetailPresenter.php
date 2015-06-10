@@ -35,6 +35,8 @@ class BulletinRecordDetailPresenter extends BasePresenter
 			'issueIdentifier' => $bulletinRecord->issueIdentifier,
 			'department' => $bulletinRecord->department,
 			'category' => $bulletinRecord->category,
+			'hasDescription' => $bulletinRecord->hasDescription(),
+			'description' => $bulletinRecord->description,
 			'municipality' => [
 				'id' => $municipality->getId(),
 				'name' => $municipality->name

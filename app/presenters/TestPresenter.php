@@ -17,7 +17,7 @@ use Nette\Application\Responses\TextResponse,
 	DOMDocument,
 	Nette\Utils\Strings,
 	Bitcont\Google\Drive,
-	Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha1,
+	Bitcont\EGov\Bulletin\Scraper\Scrapers\Praha\Praha6,
 	Bitcont\EGov\Bulletin\Harvester;
 
 
@@ -27,9 +27,15 @@ class TestPresenter extends BasePresenter
 	public function renderScrape()
 	{
 
-		$scraper = new Praha1;
+		ini_set('max_execution_time', 60 * 5);
+
+
+		$scraper = new Praha6;
 		$records = $scraper->scrape();
-		\Tracy\Debugger::dump($records);
+
+		print_r($records);
+
+//		\Tracy\Debugger::dump($records);
 
 
 		$this->sendResponse(new TextResponse(' scrape '));

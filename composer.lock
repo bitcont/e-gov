@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9479fc2e6f783cd8aedf644bbb4acc3b",
+    "hash": "6ca6e4e8b30692e643cbf31000890a26",
     "packages": [
         {
             "name": "dg/adminer-custom",
@@ -1110,16 +1110,16 @@
         },
         {
             "name": "kdyby/curl",
-            "version": "v2.2.0",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kdyby/Curl.git",
-                "reference": "ef36fcca46bc7617ffe89c55a85c9acbc02c25ec"
+                "reference": "92ec65b498be4c7f99e39bc6b0cf5f335b07c3ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Kdyby/Curl/zipball/ef36fcca46bc7617ffe89c55a85c9acbc02c25ec",
-                "reference": "ef36fcca46bc7617ffe89c55a85c9acbc02c25ec",
+                "url": "https://api.github.com/repos/Kdyby/Curl/zipball/92ec65b498be4c7f99e39bc6b0cf5f335b07c3ba",
+                "reference": "92ec65b498be4c7f99e39bc6b0cf5f335b07c3ba",
                 "shasum": ""
             },
             "require": {
@@ -1128,19 +1128,19 @@
                 "nette/utils": "~2.2@dev"
             },
             "require-dev": {
-                "jakub-onderka/php-parallel-lint": "~0.6",
+                "jakub-onderka/php-parallel-lint": "~0.7",
                 "latte/latte": "~2.2@dev",
                 "nette/application": "~2.2@dev",
                 "nette/bootstrap": "~2.2@dev",
                 "nette/caching": "~2.2@dev",
                 "nette/component-model": "~2.2@dev",
                 "nette/database": "~2.2@dev",
+                "nette/deprecated": "~2.2@dev",
                 "nette/di": "~2.2@dev",
                 "nette/finder": "~2.2@dev",
                 "nette/forms": "~2.2@dev",
                 "nette/mail": "~2.2@dev",
                 "nette/neon": "~2.2@dev",
-                "nette/nette": "~2.2@dev",
                 "nette/php-generator": "~2.2@dev",
                 "nette/reflection": "~2.2@dev",
                 "nette/robot-loader": "~2.2@dev",
@@ -1184,11 +1184,11 @@
                 "http",
                 "nette"
             ],
-            "time": "2014-07-26 16:52:43"
+            "time": "2015-05-09 19:35:58"
         },
         {
             "name": "kdyby/curl-ca-bundle",
-            "version": "v1.0.7",
+            "version": "dev-master",
             "source": {
                 "type": "git",
                 "url": "https://github.com/Kdyby/CurlCaBundle.git",
@@ -3342,6 +3342,8 @@
     "minimum-stability": "stable",
     "stability-flags": {
         "google/apiclient": 20,
+        "kdyby/curl": 20,
+        "kdyby/curl-ca-bundle": 20,
         "neitanod/forceutf8": 20,
         "kdyby/doctrine": 20,
         "kdyby/doctrine-search": 20,
