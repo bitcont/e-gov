@@ -13,7 +13,7 @@ class Praha2 extends EDeska
 	 *
 	 * @var string
 	 */
-	const BASE_URL = 'http://82.208.47.250:8080/eDeska/';
+	const BASE_URL = 'http://85.207.99.7:8080/eDeska/';
 
 	/**
 	 * @var string
