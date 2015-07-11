@@ -32,6 +32,7 @@ class RouterFactory
 
 
 		$router[] = new Route('search', 'BulletinRecordList:search');
+		$router[] = new Route('kontakt', 'StaticPages:contact');
 		$router[] = new Route('<presenter>/<action>[/<id>]', 'BulletinRecordList:default');
 
 		return $router;
