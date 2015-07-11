@@ -119,7 +119,9 @@ class BulletinFacade
 	public function getMixedBulletinRecords($items = 50)
 	{
 		$municipalities = $this->getMunicipalities();
-		$itemsPerMunicipality = ceil($items / count($municipalities));
+		$itemsPerMunicipality = count($municipalities)
+			? ceil($items / count($municipalities))
+			: 0;
 
 		$criteria = Criteria::create()
 			->orderBy(['publishedFrom' => Criteria::DESC])

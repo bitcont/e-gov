@@ -1,0 +1,1 @@
+ssh root@46.101.249.79 'ssh-agent bash -c "ssh-add ~/pks/github.openssh; git -C /var/www/uredky fetch --all; git -C /var/www/e-gov checkout --force origin/master"; composer self-update; composer install --working-dir /var/www/e-gov'     

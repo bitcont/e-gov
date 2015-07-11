@@ -1,9 +1,18 @@
 
 parameters:
+
+#	database:
+#		driver: pdo_pgsql
+#		host: localhost
+#		user: postgres
+#		password: heslo
+#		dbname: uredky
+#		charset: UTF8
+
 	database:
-		driver: pdo_pgsql
+		driver: mysqli
 		host: localhost
-		user: postgres
+		user: root
 		password: heslo
 		dbname: uredky
 		charset: UTF8

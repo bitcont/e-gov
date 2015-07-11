@@ -1,0 +1,6 @@
+## Customize deployment commands
+deployment:
+  production:
+    branch: master
+    commands:
+      - bash -x deploy.sh
